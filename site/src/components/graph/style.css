@@ -1,0 +1,210 @@
+.graphContainer {
+    width: var(--vw, 1vw);
+    height: var(--vh, 1vw);
+    background-color: rgba(18, 18, 18, 0.75);
+    border-radius: 8px;
+    box-shadow: 0px 0px 20px 4px rgba(18,18,18,0.42);
+    /* box-shadow: inset 0px 0px 12px 4px rgba(161,154,142,0.42); */
+    box-shadow: inset 2px 2px 8px 4px rgba(18, 18, 18, 0.7);
+    margin-top: 8px;
+    /* margin-left: 8px; */
+
+}
+
+.securityMetadataContainer {
+  position: relative;
+  height: 100%;
+}
+
+.userUpdated {
+  color: #EC6CFF;
+  bottom: 0px;
+  right: 4px;
+  position: absolute;
+  animation: fadeOut 3s ease-in-out;/*New content */
+  -webkit-animation: fadeOut 3s ease-in-out;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+.spacerForChart {
+  width: 100%;
+  height: 16px;
+}
+.graphTitle {
+    padding-top: 12px;
+    padding-left: 16px;
+}
+.graphPrice {
+    padding-top: 4px;
+    padding-left: 16px;
+    color: rgba(210,203,193, 0.93);
+    text-shadow: 1px 5px 6px rgb(220, 170, 55, 0.7);
+}
+.graphPriceChange {
+    padding-top: 4px;
+    padding-left: 16px;
+    color: rgba(210,203,193, 0.93);
+    text-shadow: 1px 5px 6px rgb(220, 170, 55, 0.7);
+}
+
+.graphDaysTrained {
+  padding-top: 4px;
+  padding-left: 16px;
+  color: rgba(210,203,193, 0.93);
+  text-shadow: 1px 5px 6px rgb(220, 170, 55, 0.7);
+}
+.companyMetadata {
+  position: absolute;
+}
+.isGainerText {
+  color: rgba(0,200,5,0.84) !important;
+}
+
+.isLoserText {
+  color: rgba(255,80,0,0.84) !important;
+}
+
+.currentPrice {
+  width: 100%;
+  line-height: 30px;
+  color: rgba(18, 18, 18, 0.75);
+}
+
+.graphChartContainer {
+  position: relative;
+}
+.graphChartPrediction {
+  position: absolute;
+  top: 0;
+}
+
+.graphChartFlickerGreen {
+  animation: flicker 6s infinite step-end;
+}
+
+.graphChartFlickerRed {
+  animation: flicker 5s infinite 2s step-end;
+}
+
+#predictionLine {
+  position: absolute;
+  right: 35px;
+}
+
+.filter {
+  filter: drop-shadow( 0 2px 1px #F5F5F5 );
+
+}
+
+@keyframes flicker {
+  0%    { opacity: 1;   }
+  3%    { opacity: 0.4; }
+  6%    { opacity: 1;   }
+  7%    { opacity: 0.4; }
+  8%    { opacity: 1;   }
+  9%    { opacity: 0.4; }
+  10%   { opacity: 1;   }
+  100%  { opacity: 1;   }
+}
+/*
+
+rgba(18,18,18,0.84) fadedblack
+rgba(220, 170, 55, 0.5) gold glow
+161,154,142,0.6 stoicMarbleBrown
+
+*/
+
+@-webkit-keyframes glowing {
+  0% { background-color: #B20000; -webkit-box-shadow: 0 0 3px #B20000  !important; }
+  50% { background-color: #FF0000; -webkit-box-shadow: 0 0 40px #FF0000  !important; }
+  100% { background-color: #B20000; -webkit-box-shadow: 0 0 3px #B20000  !important; }
+
+  0% { fill: #B20000; -webkit-box-shadow: 0 0 3px #B20000  !important; }
+  50% { fill: #FF0000; -webkit-box-shadow: 0 0 40px #FF0000  !important; }
+  100% { fill: #B20000; -webkit-box-shadow: 0 0 3px #B20000  !important; }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 0;
+    text-shadow: 0 4px 10px rgba(161,154,142,0.84);
+  }
+
+  50% {
+    opacity: 1.0;
+    text-shadow: 0 4px 4px rgba(161,154,142,0.84);
+  }
+
+  100% {
+    opacity: 0.0;
+    text-shadow: 0 4px 10px rgba(161,154,142,0.84);
+  }
+
+}
+
+.glowAnimations {
+    animation: glow .5s infinite alternate;
+}
+
+@keyframes glow {
+    to {
+        text-shadow: 0 4px 10px rgba(161,154,142,0.84);
+    }
+}
+
+@keyframes float {
+	0% {
+		bottom: 12px;
+	}
+	50% {
+    bottom: 7px;
+	}
+	100% {
+    bottom: 12px;
+	}
+}
+
+@keyframes float2 {
+	0% {
+		box-shadow: 0 6px 10px 0px rgba(161,154,142,0.6);
+		top: 12px;
+	}
+	50% {
+		box-shadow: 0 8px 12px 0px rgba(161,154,142,0.2);
+    top: 7px;
+	}
+	100% {
+		box-shadow: 0 6px 10px 0px rgba(161,154,142,0.6);
+    top: 12px;
+	}
+}
+
+@keyframes floatGreen {
+	0% {
+		box-shadow: 0 6px 10px 0px rgba(161,154,142,0.6);
+		bottom: 12px;
+	}
+	50% {
+		box-shadow: 0 8px 12px 0px rgba(161,154,142,0.2);
+    bottom: 7px;
+	}
+	100% {
+		box-shadow: 0 6px 10px 0px rgba(161,154,142,0.6);
+    bottom: 12px;
+	}
+}
+
+@keyframes floatRed {
+	0% {
+		box-shadow: 0 6px 30px 0px rgba(255,80,0,0.6);
+		bottom: 12px;
+	}
+	50% {
+		box-shadow: 0 24px 20px 0px rgba(255,80,0,0.2);
+    bottom: 7px;
+	}
+	100% {
+		box-shadow: 0 6px 30px 0px rgba(255,80,0,0.6);
+    bottom: 12px;
+	}
+}

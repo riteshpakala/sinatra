@@ -16,6 +16,10 @@
   height: 100%;
 }
 
+.securityMetadata {
+  float: left;
+}
+
 .userUpdated {
   color: #EC6CFF;
   bottom: 0px;

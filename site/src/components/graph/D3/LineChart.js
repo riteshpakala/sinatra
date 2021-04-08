@@ -22,6 +22,7 @@ function drawChart(props) {
         .attr("id", "svg"+symbol)
         .attr("width", props.size.width + props.margin.left + props.margin.right)
         .attr("height", props.size.height + props.margin.top + props.margin.bottom)
+        .attr("transform", "translate(0," + -props.margin.top + ")")
         .append("g")
         .attr("transform", "translate(" + props.margin.left + "," + props.margin.top + ")");
 
@@ -301,7 +302,7 @@ function addPredictionLine(items, width, height, margin, x, y, color, symbol) {
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + margin.left + "," + (margin.top - margin.bottom) + ")");
 
     svgPrediction
         .append("path")

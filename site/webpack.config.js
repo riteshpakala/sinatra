@@ -32,7 +32,9 @@ module.exports = {
   ],
   devServer: {
     contentBase: './dist',
-    hot: true
+    hot: true,
+    port: 8081,
+    proxy: { "/api/**": { target: 'http://localhost:8080', secure: false }  }
  },
  watchOptions: {
    ignored: './node_modules'

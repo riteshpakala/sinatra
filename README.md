@@ -1,1 +1,1 @@
-# stoic-site
+# sinatra

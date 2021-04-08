@@ -10,6 +10,22 @@
   justify-content: center;
 }
 
+.projectSummary {
+  position: fixed;
+  z-index: 20000;
+  top: 50%;
+  left: 50%;
+  margin: 0 auto;
+  width: 60%;
+  height: auto;
+  transform: translate(-50%, -50%);
+
+  background-color: rgba(220, 220, 220, 0.75);
+  color: #121212;
+  border-radius: 4px;
+  padding: 4px;
+}
+
 .appMedia {
   position: fixed;
   top: 0;

@@ -88,7 +88,7 @@ class Graph extends React.Component {
           </div>)
 
       } else {
-        return (<div className="graphContainer"> hey </div>);
+        return (<div className="graphContainer"> </div>);
       }
   }
 }

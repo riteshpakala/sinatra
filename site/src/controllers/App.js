@@ -44,6 +44,36 @@ class App extends React.Component {
         </div>
 
         { <TheView size={4} widthRatio={0.95} /> }
+
+        <div className="projectSummary courierMedium">
+          Project Summary:
+
+          <p>
+            A market emits hints through features and indicators, which I will refer to as the tones. 
+            Sinatra will show relationships between technical indicators and their weighted performance similarities 
+            when used with a Support Vector Machine.
+          </p>
+          
+          <p>
+            The Support Vector Machine will provide a prediction for the next valid trading day.
+          </p>
+
+          <p> 
+            The goal of this project is to provide a visual to accompany the reasoning behind certain
+            techinical analysis approaches. Softening the learning curve, with the ever so cumbersom mountain
+            of variables and data one can get lost within, while understanding today's financial markets.
+          </p>
+          
+          <p>
+            Goal 1: Ability to run back-testing simulations and generate prediction results for past dates of a selected security
+          </p>
+          <p>
+            Goal 2: Ability to easily compare the indicators performance results between each of the combinations of days and indicators
+          </p>
+          <p>
+            Goal 3: Developing trading strategies deducting patterns from day range variations in indicator combinations found per iteration with ease
+          </p>
+        </div>
       </div>
     )
   }

@@ -139,7 +139,7 @@ function drawChart(props) {
     var diffPercentage = (newVal * 100) / data[0].value - 100;
 
     d3.select(".securityFeatureValue"+symbol).html(`<span>\$${newVal}</span>`);
-    d3.select(".securityFeatureValue"+symbol).html(
+    d3.select(".securityFeatureValueChange"+symbol).html(
         `<span>\$${diffVal}(${diffPercentage.toFixed(2)}%)</span>`
     ); //**** */
     /////
@@ -171,7 +171,7 @@ function drawChart(props) {
 
 
         d3.select(".securityFeatureValue"+symbol).html(`<span>\$${newVal}</span>`);
-        d3.select(".securityFeatureValue"+symbol).html(
+        d3.select(".securityFeatureValueChange"+symbol).html(
             `<span>\$${diffVal}(${diffPercentage.toFixed(2)}%)</span>`
         ); 
     }
@@ -190,7 +190,7 @@ function drawChart(props) {
             (Math.round(data[0].value * 100) / 100).toFixed(2) - //*** */
         100; //**** */
         d3.select(".securityFeatureValue"+symbol).html(`<span> \$${moveVal}</span>`);
-        d3.select(".securityFeatureValue"+symbol).html(
+        d3.select(".securityFeatureValueChange"+symbol).html(
         //**** */
         `<span>\$${diffVal.toFixed(2)}(${diffPercentage.toFixed(2)}%)</span>` //**** */
         ); //**** */
@@ -302,7 +302,7 @@ function addPredictionLine(items, width, height, margin, x, y, color, symbol) {
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + (margin.top - margin.bottom) + ")");
+        .attr("transform", "translate(" + margin.left + "," + (margin.top - 10) + ")");
 
     svgPrediction
         .append("path")

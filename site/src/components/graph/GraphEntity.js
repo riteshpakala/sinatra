@@ -120,7 +120,7 @@ class GraphEntity extends React.Component {
         </div>
         <div className={"securityFeatureValue"+`${this.state.symbol}`+" graphPrice courierSemiLarge"}>
         </div>
-        <div className={"securityFeatureValue"+`${this.state.symbol}`+" graphPriceChange courierMedium"}>
+        <div className={"securityFeatureValueChange"+`${this.state.symbol}`+" graphPriceChange courierMedium"}>
         </div>
       </div>
       <div className="spacerForChart"> </div>

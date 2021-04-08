@@ -55,23 +55,25 @@ class App extends React.Component {
           </p>
           
           <p>
-            The Support Vector Machine will provide a prediction for the next valid trading day.
+            The Support Vector Machine will provide a prediction for the next valid trading day. While generating 
+            multiple visuals showcasing influence and impact: momentum, velocity, volume, RSI, stochastics, and other indicators.
           </p>
 
           <p> 
-            The goal of this project is to provide a visual to accompany the reasoning behind certain
-            techinical analysis approaches. Softening the learning curve, with the ever so cumbersom mountain
-            of variables and data one can get lost within, while understanding today's financial markets.
+            3 expectations:
           </p>
           
           <p>
-            Goal 1: Ability to run back-testing simulations and generate prediction results for past dates of a selected security
+            Goal 1: Ability to run back-testing simulations and generate prediction results for past dates of a selected security. Generating a force-directed node link diagram graphing
+            the indicator relationship outcome.
           </p>
           <p>
-            Goal 2: Ability to easily compare the indicators performance results between each of the combinations of days and indicators
+            Goal 2: Interact and observe connections and repeated occurence of indicators that influenced low errors in predictions with ease. Adjacency Matrices generate to act as a mapping
+            for potential patterns.
           </p>
           <p>
-            Goal 3: Developing trading strategies deducting patterns from day range variations in indicator combinations found per iteration with ease
+            Goal 3: Developing trading strategies deducting patterns from day range variations chosen in each iteration in indicator combinations. For instance, a possible question one can pose:
+            "did SMA 20 or did SMA 24 work better with Stochastic K ranging from 14 days or from 16 days?""
           </p>
         </div>
       </div>

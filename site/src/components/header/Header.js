@@ -59,7 +59,7 @@ Header.propTypes ={
 }
 
 Header.defaultProps = {
-    title: '* sinatra',
+    title: '* sinatra - work in progress',
     subtitle: 'author: ritesh pakala'
 };
 

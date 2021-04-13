@@ -22,7 +22,8 @@ class Frank extends React.Component {
         width: 400,
         height: 320,
         viewingGraph: false,
-        data:[]};
+        data:[],
+        predictions:[]};
   }
 
   componentWillMount() {
@@ -74,7 +75,7 @@ class Frank extends React.Component {
         height: containerHeight * 0.9,
     });
     
-    // this.siphon(this.props.symbol);
+    this.siphon(this.props.symbol);
   }
 
   siphon(symbol) {
@@ -102,7 +103,7 @@ class Frank extends React.Component {
                 var formattedDate = date.getUTCFullYear() + '-' + (date.getUTCMonth() + 1)+ '-' + date.getDate();
 
                 let jsonData = {};
-                console.log(timestamp);
+
                 jsonData["dateEpoch"] = parseFloat(timestamp);
                 jsonData["dateAsString"] = formattedDate;
                 jsonData["value"] = parseFloat(quote);
@@ -138,7 +139,7 @@ class Frank extends React.Component {
             }).then(data => {
                 return data.json();
             }).then(json => {
-
+                this.setState({predictions: json.predictions});
             });
 
             this.setState({data: jsonAggregratedData});
@@ -146,76 +147,38 @@ class Frank extends React.Component {
     }
   }
 
+  createNodes = () => {
+    let collection = []
+    console.log("hey");
+    let counter = 0;
+    
+    for (let i = 0; i < 3; i++) {
+      let children = []
+
+      for (let j = 0; j < 3; j++) {
+        console.log(this.state.predictions[counter]);
+        children.push(<NodeGraph
+          key={"nodeGraph" + counter}
+          symbol={"nodeGraph" + counter}
+          count={4}
+          width={this.state.width}
+          height={this.state.height}
+          prediction={this.state.predictions[counter]}/>);
+
+        counter += 1;
+      }
+
+      collection.push(<div key={"franklyNode" + i} className="graphsToTheLeft">{children}</div>)
+    }
+    return collection
+  }
+
   render() {
 
     return (
     <div className="frankContainer">
 
-      <div className="graphsToTheLeft">
-        <NodeGraph
-          symbol="aapl"
-          count={4}
-          width={this.state.width}
-          height={this.state.height}
-          viewingGraph={this.state.viewingGraph}/>
-        <NodeGraph
-          symbol="msft"
-          count={4}
-          width={this.state.width}
-          height={this.state.height}
-          viewingGraph={this.state.viewingGraph}/>
-        <NodeGraph
-          symbol="amzn"
-          count={4}
-          width={this.state.width}
-          height={this.state.height}
-          viewingGraph={this.state.viewingGraph}/>
-      </div>
-
-      <div className="graphsToTheLeft">
-
-        <NodeGraph
-          symbol="tsla"
-          count={4}
-          width={this.state.width}
-          height={this.state.height}
-          viewingGraph={this.state.viewingGraph}/>
-        <NodeGraph
-          symbol="pfe"
-          count={4}
-          width={this.state.width}
-          height={this.state.height}
-          viewingGraph={this.state.viewingGraph}/>
-        <NodeGraph
-          symbol="fb"
-          count={4}
-          width={this.state.width}
-          height={this.state.height}
-          viewingGraph={this.state.viewingGraph}/>
-      </div>
-
-      <div className="graphsToTheLeft">
-
-        <NodeGraph
-          symbol="mrna"
-          count={4}
-          width={this.state.width}
-          height={this.state.height}
-          viewingGraph={this.state.viewingGraph}/>
-        <NodeGraph
-          symbol="nvda"
-          count={4}
-          width={this.state.width}
-          height={this.state.height}
-          viewingGraph={this.state.viewingGraph}/>
-        <NodeGraph
-          symbol="amd"
-          count={4}
-          width={this.state.width}
-          height={this.state.height}
-          viewingGraph={this.state.viewingGraph}/>
-      </div>
-
+      {this.createNodes()}
 
       <div className={ this.state.viewingGraph ? "graphContainer" : "graphContainer hide" }>
 

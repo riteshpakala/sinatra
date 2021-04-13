@@ -103,7 +103,7 @@ class NodeGraph extends React.Component {
 
     let symbol = this.props.symbol;
     let isNode = this.state.viewingNode;
-    console.log(isNode);
+
     minette.prepare().then(function() {
 
     minette.setStyle(minette_style);
@@ -120,10 +120,33 @@ class NodeGraph extends React.Component {
     });
   }
 
+  generatePrediction = () => {
+      
+    if (this.props.prediction == undefined) {
+      return (<div></div>);
+    }
+      
+    return(<div className="nodePrediction courierMedium">
+        <p className="daysTrained">
+          { "Days trained: " + this.props.prediction.dataSize }
+        </p>
+        <p className="indicator1">
+          { "EMA Days: " + this.props.prediction.daysEMA }
+        </p>
+        <p className="indicator2">
+          { "SMA Days: " + this.props.prediction.daysSMA }
+        </p>
+        <p className="indicator2">
+          { "Prediction: " + ((Math.floor((parseFloat(this.props.prediction.value) * 10000)) / 10000) * 100) + "% change" }
+        </p>
+      </div>);
+  }
+
   render() {
 
     return (
     <div className={"minette" + "svgnode" + this.props.symbol + " nodeContainer"}>
+        {this.generatePrediction()}
         <div id={"button" + this.props.symbol} className="basicButton courierSmall stoicBlack">
           <p> { this.state.viewingNode ? "matrix" : "node" } </p>
         </div>

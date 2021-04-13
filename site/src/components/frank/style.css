@@ -35,6 +35,22 @@
     position: absolute;
 }
 
+.nodePrediction {
+    float: left;
+    width: 240px;
+    height: 75px;
+    border-radius: 4px;
+    background-color: #a19a8e8e;
+    top: 20px;
+    left: 16px;
+    text-align: left;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    color: rgba(18, 18, 18, 1.0);
+}
+
 .frankButton p {
     width: 100%;
 }

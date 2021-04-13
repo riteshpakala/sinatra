@@ -29,7 +29,7 @@ app.get("/api/david/v0.00.00/stock/history/:id", function(req, res) {
 
     let todaysDate = new Date();
     let last30Days = new Date();
-    last30Days.setDate(todaysDate.getDate()-30);
+    last30Days.setDate(todaysDate.getDate()-240);
 
     
     let tDate_Epoch = (Math.floor((todaysDate.getTime()-last30Days.getMilliseconds())/1000)).toString();
@@ -42,6 +42,23 @@ app.get("/api/david/v0.00.00/stock/history/:id", function(req, res) {
         return data.json();
       }).then(json => {
         res.send(json);
+      });
+});
+
+app.post("/api/david/v0.00.00/stock/think", function(req, res) {
+  fetch("http://localhost:7070/think/generate", {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+      },
+        body: JSON.stringify({ 'data' : req.body })
+      })
+      .then(res => {
+          return res.json();
+      }).then(json => {
+          console.log(json);
+          return res.send(json);
       });
 });
 

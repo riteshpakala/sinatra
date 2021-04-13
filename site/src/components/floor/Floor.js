@@ -6,7 +6,7 @@ import '../../constants/GlobalStyle.css';
 
 import Graph from '../graph/Graph';
 
-class TheView extends React.Component {
+class Floor extends React.Component {
 
   constructor(props) {
     super(props);
@@ -110,4 +110,4 @@ class TheView extends React.Component {
   }
 }
 
-export default TheView;
+export default Floor;

@@ -36,7 +36,7 @@ class Header extends React.Component {
     <div>
         <div className="header">
             <div className="headerTitleContainer marginLeftPadding">
-                <p className="courierLarge fade-in-copy-2">
+                <p className="courierMedium fade-in-copy-2">
                     <a className="sinatraMarbleBrown" target="_blank">{this.props.title}</a>
                 </p>
             </div>
@@ -59,7 +59,7 @@ Header.propTypes ={
 }
 
 Header.defaultProps = {
-    title: '* sinatra - work in progress',
+    title: '* sinatra - work in progress - demo ticker: $MSFT',
     subtitle: 'author: ritesh pakala'
 };
 

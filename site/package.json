@@ -67,6 +67,7 @@
     "react-list": "^0.8.11",
     "react-router-dom": "^5.2.0",
     "reactstrap": "^8.7.1",
+    "regenerator-runtime": "^0.13.7",
     "style-loader": "^0.23.1",
     "url-loader": "^4.0.0",
     "webpack": "^4.31.0"

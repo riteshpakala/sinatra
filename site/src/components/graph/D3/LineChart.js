@@ -151,7 +151,7 @@ function drawChart(props) {
 
     function mousemove() {
         //The 0.9 comes from when we shrink the graph in GraphEntity
-        let positionXPadding = ((props.size.width * 0.9) - (props.margin.left + props.margin.right)) * 2;
+        let positionXPadding = ((props.size.width * 0.9) - (props.margin.left + props.margin.right));
 
         var x0 = x.invert(d3.mouse(d3.event.currentTarget)[0] + positionXPadding);
         var i = bisect(data, x0, 1);

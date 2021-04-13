@@ -38,8 +38,8 @@ class Graph extends React.Component {
   style() {
     let symbols = [this.props.symbol];
 
-    let vw = this.props.width / 3 - 16;
-    let vh = this.props.height / 3 - 16;
+    let vw = this.props.width - 16;// / 3 - 16;
+    let vh = this.props.height - 16;// / 3 - 16;
 
     document.documentElement.style.setProperty('--vw', `${vw}px`);
     document.documentElement.style.setProperty('--vh', `${vh}px`);

@@ -23,7 +23,13 @@ class Frank extends React.Component {
         height: 320,
         viewingGraph: false,
         data:[],
-        predictions:[]};
+        predictions:[],
+        nodes:[],
+        highlight:[],
+        dataSizes:[],
+        daysPages:[],
+        errors: undefined,
+        meta: undefined};
   }
 
   componentWillMount() {
@@ -139,7 +145,14 @@ class Frank extends React.Component {
             }).then(data => {
                 return data.json();
             }).then(json => {
-                this.setState({predictions: json.predictions});
+
+                this.setState({predictions: json.result,
+                   errors: json.errors,
+                   nodes: json.graph.nodes, 
+                   dataSizes: json.dataSizes,
+                   daysPages: json.daysPages,
+                   meta: json.graph.meta,
+                   highlight: json.errors.bestPaths});
             });
 
             this.setState({data: jsonAggregratedData});
@@ -149,21 +162,27 @@ class Frank extends React.Component {
 
   createNodes = () => {
     let collection = []
-    console.log("hey");
+
     let counter = 0;
     
     for (let i = 0; i < 3; i++) {
       let children = []
 
       for (let j = 0; j < 3; j++) {
-        console.log(this.state.predictions[counter]);
+
         children.push(<NodeGraph
           key={"nodeGraph" + counter}
           symbol={"nodeGraph" + counter}
           count={4}
           width={this.state.width}
           height={this.state.height}
-          prediction={this.state.predictions[counter]}/>);
+          prediction={this.state.predictions[counter]}
+          nodes={this.state.nodes[counter]}
+          errors={this.state.errors}
+          highlight={this.state.highlight[counter]}
+          meta={this.state.meta}
+          dataSizes={this.state.dataSizes[counter]}
+          daysPages={this.state.daysPages[counter]}/>);
 
         counter += 1;
       }
@@ -183,7 +202,7 @@ class Frank extends React.Component {
       <div className={ this.state.viewingGraph ? "graphContainer" : "graphContainer hide" }>
 
         <Graph
-        symbol="msft"
+        symbol={this.props.symbol}
         count={4}
         width={(window.innerWidth * 0.95) - 200}
         height={window.innerHeight * 0.9}/>

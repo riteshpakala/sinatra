@@ -69,9 +69,9 @@ Color system
     float: left;
     width: 48px;
     height: 24px;
-    border-radius: 4px;
+    border-radius: 1px;
     background-color: #a19a8e;
-    bottom: 20px;
+    bottom: 16px;
     left: 16px;
     text-align: center;
     font-size: 12px;

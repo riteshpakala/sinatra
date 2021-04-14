@@ -5,6 +5,7 @@ import './style.css';
 import '../../constants/GlobalStyle.css';
 import * as d3 from "d3";
 import { Minette, MinetteStyle } from "./D3/Minette.js";
+import CsvDownload from 'react-json-to-csv';
 
 class NodeGraph extends React.Component {
 
@@ -46,7 +47,7 @@ class NodeGraph extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setup(nextProps);
 
-    this.drawMinette();
+    //this.drawMinette();
   }
 
   onMouseUp( event ) {
@@ -68,12 +69,12 @@ class NodeGraph extends React.Component {
 
   setup(nextProps) {
 
-    this.updateChart();
+    // this.updateChart();
   }
 
   componentDidUpdate() {
 
-    this.updateChart();
+    // this.updateChart();
   }
 
   updateChart() {
@@ -82,6 +83,10 @@ class NodeGraph extends React.Component {
   }
 
   drawMinette() {
+    let nodes = this.props.nodes;
+    let meta = this.props.meta;
+    let highlight = this.props.highlight;
+    let subtitles = this.props.daysPages;
 
     let margin = {
         top: 8,
@@ -94,7 +99,7 @@ class NodeGraph extends React.Component {
     let heightPref = this.props.height - margin.top - margin.bottom;
 
     //Minette
-    const DATA_SET = "https://gist.githubusercontent.com/riteshpakala/c2388ac4745e2d4626a394fc9708c68d/raw/dbbc0c8ecb92e43a5081895d672baeeded33b036/soc-firm-hi-tech.csv";
+    const DATA_SET = "https://gist.githubusercontent.com/riteshpakala/83a28fc8bb1aa13c7b08d393082c1863/raw/fdbe6383c9ca18c626d6c425b3a8d647b6e1df29/sinatra_test_set_1.csv";//"https://gist.githubusercontent.com/riteshpakala/c2388ac4745e2d4626a394fc9708c68d/raw/dbbc0c8ecb92e43a5081895d672baeeded33b036/soc-firm-hi-tech.csv";
 
     let minette = new Minette(DATA_SET);
 
@@ -108,11 +113,11 @@ class NodeGraph extends React.Component {
 
     minette.setStyle(minette_style);
 
-    minette.arrangeNodes();
+    minette.arrangeNodes(nodes);
     minette.createCanvas("svgnode"+symbol);
     if (isNode) {
 
-        minette.drawNodes();
+        minette.drawNodes(meta, highlight, subtitles);
     } else {
 
         minette.drawMatrix();
@@ -125,31 +130,23 @@ class NodeGraph extends React.Component {
     if (this.props.prediction == undefined) {
       return (<div></div>);
     }
-      
-    return(<div className="nodePrediction courierMedium">
-        <p className="daysTrained">
-          { "Days trained: " + this.props.prediction.dataSize }
-        </p>
-        <p className="indicator1">
-          { "EMA Days: " + this.props.prediction.daysEMA }
-        </p>
-        <p className="indicator2">
-          { "SMA Days: " + this.props.prediction.daysSMA }
-        </p>
-        <p className="indicator2">
-          { "Prediction: " + ((Math.floor((parseFloat(this.props.prediction.value) * 10000)) / 10000) * 100) + "% change" }
-        </p>
-      </div>);
+
+    this.updateChart();
+    this.drawMinette();
+    console.log("%%%%%%%%%");
+    console.log(this.props.daysPages);
+    return (<div className="bestError courierMedium"> training days: { this.props.dataSizes } best error: { (Math.round(parseFloat(this.props.highlight[0].error) * 10000) / 10000) }% </div>);
   }
 
   render() {
 
     return (
-    <div className={"minette" + "svgnode" + this.props.symbol + " nodeContainer"}>
+    <div id="minette" className={"minette" + "svgnode" + this.props.symbol + " nodeContainer"}>
         {this.generatePrediction()}
         <div id={"button" + this.props.symbol} className="basicButton courierSmall stoicBlack">
           <p> { this.state.viewingNode ? "matrix" : "node" } </p>
         </div>
+        
     </div>
     )
   }

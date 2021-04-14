@@ -11,6 +11,17 @@
 
 }
 
+.tooltip {
+  position: absolute;
+  padding: 12px;
+  background: rgba(18, 18, 18, 0.9);
+  pointer-events: none;
+  color: #F5F5F5;
+
+
+  float: left;
+}
+
 .nodeContainer {
   position: relative;
 }
@@ -22,6 +33,13 @@
 
 .securityMetadata {
   float: left;
+}
+
+.bestError {
+  color: #EC6CFF;
+  bottom: 0px;
+  right: 4px;
+  position: absolute;
 }
 
 .userUpdated {

@@ -121,7 +121,10 @@ import regeneratorRuntime from "regenerator-runtime";
                         .entries(this.dataSet);
     }
 
-    arrangeNodes() {
+    arrangeNodes(nodes) {
+        if (nodes != undefined) {
+            this.dataSet = nodes;
+        }
         this.node = new MinetteNodeLink(this.dataSet);
     }
 
@@ -249,6 +252,8 @@ import regeneratorRuntime from "regenerator-runtime";
     }
 
     createCanvas(identifier) {
+        this.tool.tip.remove();
+        this.tool = new MinetteTool(identifier);
         this.svg = d3.select(".minette"+identifier)
                         .append("svg")
                         .attr("id", identifier)
@@ -507,21 +512,29 @@ import regeneratorRuntime from "regenerator-runtime";
         this.legend.draw();                  
     }
 
-    drawNodes() {
+    drawNodes(meta, highlight, subtitles) {
         let attach = this.attachTooltip;
         let tool = this.tool;
 
+        let targetHighlights = [];
+        if (highlight != undefined) {
+
+            highlight.map(item => { return item.nodes.forEach(data => { targetHighlights.push(data.target); targetHighlights.push(data.source); }) });
+            targetHighlights = targetHighlights.filter(uniques);
+            console.log(targetHighlights);
+        } 
         let links = this.svg.append("g")
                             .attr("class", "links")
                             .selectAll("line")
-                            .data(this.dataSet)
+                            .data(this.node.getData)
                             .enter()
                             .append("line")
                             .attr("stroke-width", 1)
-                            .attr("stroke", "#808080")
-                            .on("mouseover", function(event, item) { return attach(event, "source: "+item.source.id, "target: "+item.target.id, tool) })
-                            .on("mouseout", this.removeTooltip(tool));
-            
+                            .attr("stroke", function(item) { return targetHighlights.includes(item.source) && targetHighlights.includes(item.target) ? "#EC6CFF" : "#808080" } );
+                            // .on("mouseover", function(event, item) { return attach(event, "source: "+item.source, "target: "+item.target, tool) })
+                            // .on("mouseout", this.removeTooltip(tool));
+        
+        let packedNodes = this.node.getNodesPacked;
         let nodes = this.svg.append("g")
                             .attr("class", "nodes")
                             .selectAll("circle")
@@ -529,22 +542,22 @@ import regeneratorRuntime from "regenerator-runtime";
                             .enter()
                             .append("circle")
                             .attr("r", 10)
-                            .attr("fill", "#121212")
-                            .on("mouseover", function(event, item) { return attach(event, "node #", item.id, tool) })
+                            .attr("fill",   function(item) { return meta == undefined ? "#121212" : meta[item.id].color; })
+                            .on("mouseover", function(event, item) { console.log(item); return meta == undefined ? undefined : attach(event, meta[packedNodes[item].id].label, subtitles[packedNodes[item].id]+" days", tool) })
                             .on("mouseout", this.removeTooltip(tool));
 
         let simulation = d3.forceSimulation()
-                           .force("link", d3.forceLink().id(link => link.id).strength(0))
-                           .force("charge", d3.forceManyBody().strength(-1)) 
+                           .force("link", d3.forceLink().id(link => link.id))//.strength(0))
+                           .force("charge", d3.forceManyBody().strength(-this.style.size.width)) //-4
                            .force("center", d3.forceCenter(this.style.size.width / 2, this.style.size.height / 2))
 
-         /*
-            for CS 360 - Review:
-            Citation: @Gerardo Furtado
-            https://stackoverflow.com/questions/43760235/d3-cannot-create-property-vx-on-number-65
-            This is where I got a better understanding of the properties required to make 
-            node-links understand their paths between each.
-        */
+        //  /*
+        //     for CS 360 - Review:
+        //     Citation: @Gerardo Furtado
+        //     https://stackoverflow.com/questions/43760235/d3-cannot-create-property-vx-on-number-65
+        //     This is where I got a better understanding of the properties required to make 
+        //     node-links understand their paths between each.
+        // */
         simulation
                 .nodes(this.node.getNodesPacked)
                 .on("tick", () => {
@@ -665,12 +678,14 @@ import regeneratorRuntime from "regenerator-runtime";
 }
 
 class MinetteTool {
-    constructor() {
-        this.tip = d3.select("body")
-                           .append("minette")	
-                           .attr("class", "tooltip")				
+    constructor(identifier) {
+        this.tip = d3.select(".minette"+identifier)
+                           .append("div")	
+                           .attr("class", "tooltip")	
+                           .attr("id", "tooltip"+identifier)				
                            .style("opacity", 0);
 
+        // this.tip = identifier == undefined ? d3.select(".tooltip") : d3.select("tooltip"+identifier);
         //TODO: Hardcoded....
         this.subtitle = "";
     }
@@ -690,7 +705,10 @@ class MinetteTool {
      */
     constructor(dataSet) {
         this.dataSet = dataSet;
-        this.nodes = dataSet.map(item => item.source).filter(uniques).sort((a, b) => (parseInt(a) < parseInt(b)) ? -1 : 1);
+        
+        this.nodes = [];
+        dataSet.forEach(item => { this.nodes.push(item.target); this.nodes.push(item.source) });//.sort((a, b) => (parseInt(a) < parseInt(b)) ? -1 : 1);
+        this.nodes = this.nodes.filter(uniques);
 
         this.nodesPacked = this.nodes.map(item => { return { id: item } });
     }

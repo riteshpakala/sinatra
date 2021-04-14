@@ -46,7 +46,7 @@ app.get("/api/david/v0.00.00/stock/history/:id", function(req, res) {
 });
 
 app.post("/api/david/v0.00.00/stock/think", function(req, res) {
-  fetch("http://ec2-13-57-58-84.us-west-1.compute.amazonaws.com:7070/think/generate", {
+  fetch(/*"http://localhost:7070/think/generate", {*/"http://ec2-13-57-58-84.us-west-1.compute.amazonaws.com:7070/think/generate", {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

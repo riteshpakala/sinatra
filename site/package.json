@@ -64,6 +64,7 @@
     "react-dom": "^16.8.6",
     "react-favicon": "0.0.16",
     "react-hot-loader": "^4.8.4",
+    "react-json-to-csv": "^1.0.4",
     "react-list": "^0.8.11",
     "react-router-dom": "^5.2.0",
     "reactstrap": "^8.7.1",

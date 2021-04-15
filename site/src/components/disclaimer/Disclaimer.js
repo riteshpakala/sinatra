@@ -48,7 +48,7 @@ class Disclaimer extends React.Component {
             <dt>Features</dt>
             <dd>- Volume Weighted Average, Volatility, Momentum, EMA, SMA.</dd>
             <dd>- Node link diagram logic</dd>
-            <dd>- Adjacency Matrix logic</dd>
+            <dd>- Scatter plot logic to display all iterations and their relevancy to the tested stock quote</dd>
             <dd>- Line chart functionality and pseudo interactive</dd>
             <dd>- Prediction infrastructure setup</dd>
 

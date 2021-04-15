@@ -31,10 +31,13 @@
 .controlBarButtons {
     position: absolute;
     top: 12px;
-    right: 12px;
+    right: 0px;
     display: flex;
-    column-gap: 12px;
-    justify-content: space-between;
+}
+
+.controlBarButtons > div {
+
+    margin-right: 12px;
 }
 
 .disclaimerFrank {
@@ -47,8 +50,6 @@
 
 .spacing20 {
     display: flex;
-    column-gap: 12px;
-    justify-content: space-between;
     padding-left: 24px;
 }
 

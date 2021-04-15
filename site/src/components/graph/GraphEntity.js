@@ -74,7 +74,11 @@ class GraphEntity extends React.Component {
     let currentPrice = parseFloat(jsonAggregratedData[jsonAggregratedData.length - 1].value);
     let lastPrice = parseFloat(jsonAggregratedData[jsonAggregratedData.length - 2].value);
     if(jsonAggregratedData[jsonAggregratedData.length - 1].dateString == yyyy+'-'+mm+'-'+dd) {
-      jsonAggregratedData.pop();
+      
+      //this is for when you wanted to add the prediction line
+      //instead of the last segment. But, we should probably just overlay
+      //the line and leave the orig line chart a ground truth of today
+      //jsonAggregratedData.pop();
     }
 
     d3.select(".securityName"+nextProps.symbol).html(`<span>\$${nextProps.symbol}</span>`);

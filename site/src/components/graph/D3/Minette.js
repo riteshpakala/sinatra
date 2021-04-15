@@ -175,10 +175,10 @@ import regeneratorRuntime from "regenerator-runtime";
     setDomainRange(xDomains, yDomains, scale) {
         //console.log(xDomains);
         //console.log(yDomains);
-        this.origin_x = d3.scaleBand()
+        this.origin_x = d3.scaleLinear()
                             .domain(xDomains)
                             .range([0, this.style.size.width])
-                            .padding(.1);
+                            //.padding(.1);
         
         this.origin_y = d3.scaleLinear()
                             .domain(yDomains)
@@ -418,7 +418,7 @@ import regeneratorRuntime from "regenerator-runtime";
     //TODO: the concept of multiple measureables needs to be refactored
     //and become more re-usable. This should be able to handle N - size
     //comaparables
-    drawBubble(data, identifier, maximas) {
+    drawBubble(data, dataPoints, meta, identifier, maximas) {
         let x_domain = this.origin_x;
         let y_domain = this.origin_y;
 
@@ -428,6 +428,8 @@ import regeneratorRuntime from "regenerator-runtime";
         let min = maximas.min;
         let max = maximas.max;
 
+        let metadata = meta;
+
         // this.svg.append("g")
         //         .selectAll("measure")
         //         .append("svg")
@@ -435,6 +437,8 @@ import regeneratorRuntime from "regenerator-runtime";
         //         .attr("height", height)
 
         let attach = this.attachTooltip;
+        let highlight = this.highlightNode;
+        let dehighlight = this.deHighlightNode;
         let remove = this.removeTooltip;
         let tool = this.tool;
         
@@ -444,32 +448,93 @@ import regeneratorRuntime from "regenerator-runtime";
                 .data(data)
                 .enter()
                 .append("circle")
-                .classed("bubble", true)
+                // .class("bubble", true)
+                .attr("class", function(item, i) {
+                    return "bubble a" + item.id.replaceAll("-", "") })
                 .attr("cx", function(item, i) { 
-                    let xd = x_domain(item[identifier][0].title);
-                    return xd + paddingLeft + 12; })
+                    let xd = x_domain(item.value);
+                    return xd; })
                 .attr("cy", function(item) { 
                     let yd = y_domain(item[identifier][0].days);
-                    return yd - 12; })
-                .attr("r", d => 12)//d.radius)
+                    return yd; })
+                .attr("r", d => 6)//d.radius)
                 .attr("fill", function(item) { 
                     let lum = luminance(item.value, max, min);
-                    return "hsl("+lum+",50%,42%"+")";
+                    let title = item[identifier][0].title;
+                    return (metadata) == undefined ? "hsl("+lum+",50%,42%"+")" : ((metadata[title]) == undefined ? "hsl("+lum+",50%,42%"+")" : metadata[title].color);
                 })
                 //.attr("style", "outline: thin solid black")
                 .style("stroke", "#121212")
                 .style("stroke-width", 0.75)
-                .attr("transform", "translate("+this.style.padding.left+", "+(this.style.padding.top)+")")
+                .attr("transform", "translate("+(this.style.padding.left)+", "+(this.style.padding.top - 12)+")")
                 /*
                     for CS 360 - Review:
                     Citation: @Ruben Helsloot
                     https://stackoverflow.com/questions/64910052/d3-js-v6-2-get-data-index-in-listener-function-selection-onclick-listene
                     This is where I learned of `.nodes().indexOf(this)` to grab and pass an index of an element
                 */
-                .on("mouseover", function(event, item) { console.log(item); return data == undefined ? undefined : attach(event, data[item][identifier][0].title, data[item][identifier][0].days+" days", tool) })
-                .on("mouseout", this.removeTooltip(tool));
+                .on("mouseover", function(event, i) { 
+                    let item = data[i];
+
+                    let title = highlight(item, dataPoints);
+
+                    return data == undefined ? undefined : attach(event, title, "$"+item.value, tool) })
+                .on("mouseout", function(event, i) {  
+                    
+                    let item = data[i];
+
+                    dehighlight(item, dataPoints);
+                    
+                    return remove(tool); 
+                });
         //console.log(this.svg);
                               
+    }
+
+    //TODO: should be reusable. refactor pls.
+    highlightNode(item, data) {
+        let title = "";
+        if (data != undefined) {
+
+            let candidates = data.map(chunk => { return chunk.predictions.filter(subChunk => { return subChunk.value == item.value; } ) });
+            let populated = candidates.filter(chunk => { return chunk.length > 0 }).flatMap(item => { return item });
+            let indicators = populated.flatMap(chunk => { return chunk.indicators.flatMap(subChunk => { return subChunk.title + " " + subChunk.days; } ); });
+            title = indicators.join(", ");
+
+            if (populated != undefined) {
+                title += " | defaults set to: " + populated[0].dataSize + " days";
+            }
+        }
+        d3.selectAll(".a"+item.id.replaceAll("-", ""))
+            .style("stroke", "#39FF14")
+            .style("stroke-width", "2");
+
+        return title;
+    }
+
+    deHighlightNode(item, data, variant) {
+        d3.selectAll(".a"+item.id.replaceAll("-", ""))
+            .style("stroke", "#121212")
+            .style("stroke-width", "0");
+    }
+
+    //TODO: should be reusable. refactor pls.
+    drawMarker(value, title, subtitle) {
+        let x_domain = this.origin_x;
+        let attach = this.attachTooltip;
+        let tool = this.tool;
+        this.svg.append("g")
+            .append("rect")
+            .style("fill", "#39FF14")
+            .style("stroke", "#39FF14")
+            .attr("x", function(d) { 
+                let xd = x_domain(parseFloat(value));
+                return xd; })
+            .attr("y", this.style.padding.top - 12)
+            .attr("width", 1.2)
+            .attr("height", this.style.size.height)
+            .on("mouseover", function(event) { return attach(event, title, subtitle, tool) })
+            .on("mouseout", this.removeTooltip(tool));
     }
 
     drawLegend() {
@@ -637,8 +702,8 @@ import regeneratorRuntime from "regenerator-runtime";
                     .duration(200)		
                     .style("opacity", .9);		
         tool.tip.html(key + "<br/>" + tool.subtitle + value)	
-                    .style("left", (event.clientX) + "px")		
-                    .style("top", (event.clientY - 28) + "px");
+                    .style("left", (event == undefined ? 0 : event.clientX) + "px")		
+                    .style("top", (event == undefined ? 0 : event.clientY - 28) + "px");
 
 
     }

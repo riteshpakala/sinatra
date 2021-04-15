@@ -18,14 +18,22 @@ function drawChart(props) {
 
     let svg = d3
         .select(".securityChart"+symbol)
+        .attr("overflow", "visible")
         .append("svg")
+        .attr("overflow", "visible")
         .attr("id", "svg"+symbol)
-        .attr("width", props.size.width + props.margin.left + props.margin.right)
-        .attr("height", props.size.height + props.margin.top + props.margin.bottom)
-        .attr("transform", "translate(0," + -props.margin.top + ")")
-        .append("g")
-        .attr("transform", "translate(" + props.margin.left + "," + props.margin.top + ")");
-
+        .attr("width", props.size.width)
+        .attr("height", props.size.height)
+        .attr("transform", "translate(" + props.margin.left + "," + 0 + ")")
+        .append("g");
+        
+    //     .select(".securityChartPrediction"+symbol)
+    //     .append("svg")
+    //     .attr("id", "svgprediction"+symbol)
+    //     .attr("width", width)
+    //     .attr("height", height)
+    //     .attr("transform", "translate(" + margin.left + "," + (margin.top) + ")")
+    //     .append("g");
     let x = d3
         .scaleTime()
         .domain(
@@ -34,7 +42,7 @@ function drawChart(props) {
             })
         ).rangeRound([0, props.size.width]);
 
-    svg.append("g").attr("transform", "translate(0," + props.size.height + ")");
+    //svg.append("g");//.attr("transform", "translate(0," + props.size.height + ")");
 
     let y = d3
         .scaleLinear()
@@ -75,7 +83,7 @@ function drawChart(props) {
         .datum(data)
         .attr("fill", "none")
         .attr("stroke", props.color)
-        .attr("stroke-width", 2.4)
+        .attr("stroke-width", 1.6)
         .attr("stroke-linecap", "round")
         .attr("d",
             d3.line()
@@ -151,12 +159,20 @@ function drawChart(props) {
 
     function mousemove() {
         //The 0.9 comes from when we shrink the graph in GraphEntity
-        let positionXPadding = ((props.size.width * 0.9) - (props.margin.left + props.margin.right));
+        let positionXPadding = (((props.size.width)) * 1.5) + (props.margin.left);
 
-        var x0 = x.invert(d3.mouse(d3.event.currentTarget)[0] + positionXPadding);
+        var x0 = x.invert(d3.mouse(d3.event.currentTarget)[0]);
+
+        if (checkBrowser() === "Firefox") {
+            x0  = x.invert(d3.mouse(d3.event.currentTarget)[0] + positionXPadding);
+        }
+
         var i = bisect(data, x0, 1);
         var selectedData = data[i];
 
+        if (selectedData == undefined) {
+            return;
+        }
         var newDate = selectedData.dateString;
         var newVal = (Math.round(selectedData.value * 100) / 100).toFixed(2);
         focus.attr("cx", x(selectedData.date)).attr("cy", y(selectedData.value));
@@ -297,12 +313,14 @@ function addGlow(defs, symbol) {
 function addPredictionLine(items, width, height, margin, x, y, color, symbol) {
     var svgPrediction = d3
         .select(".securityChartPrediction"+symbol)
+        .attr("overflow", "visible")
         .append("svg")
+        .attr("overflow", "visible")
         .attr("id", "svgprediction"+symbol)
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + (margin.top - 10) + ")");
+        .attr("width", width)
+        .attr("height", height)
+        .attr("transform", "translate(" + margin.left + "," + (margin.top - margin.bottom/2) + ")")
+        .append("g");
 
     svgPrediction
         .append("path")
@@ -330,6 +348,24 @@ function addPredictionLine(items, width, height, margin, x, y, color, symbol) {
         .style("filter", "url(#glow"+symbol+")");
 
     return svgPrediction;
+}
+
+function checkBrowser(){
+    let browser = "";
+    let c = navigator.userAgent.search("Chrome");
+    let f = navigator.userAgent.search("Firefox");
+    let m8 = navigator.userAgent.search("MSIE 8.0");
+    let m9 = navigator.userAgent.search("MSIE 9.0");
+    if (c > -1) {
+        browser = "Chrome";
+    } else if (f > -1) {
+        browser = "Firefox";
+    } else if (m9 > -1) {
+        browser ="MSIE 9.0";
+    } else if (m8 > -1) {
+        browser ="MSIE 8.0";
+    }
+    return browser;
 }
 
 export { LineChart, drawChart, addGlow, addPredictionLine };

@@ -57,7 +57,7 @@ app.post("/api/david/v0.00.00/stock/think", function(req, res) {
       .then(res => {
           return res.json();
       }).then(json => {
-          console.log(json);
+          // console.log(json);
           return res.send(json);
       });
 });

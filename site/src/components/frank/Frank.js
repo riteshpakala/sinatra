@@ -43,7 +43,6 @@ class Frank extends React.Component {
   componentWillMount() {
     this.style();
 
-    
     this.siphon(this.props.symbol);
   }
 
@@ -108,7 +107,7 @@ class Frank extends React.Component {
   }
 
   style() {
-    const containerWidth = window.innerWidth / 3 - 16;
+    const containerWidth = window.innerWidth / 3 - 24;
     const containerHeight = window.innerHeight / 3 - 16;
 
     this.setState({
@@ -118,7 +117,7 @@ class Frank extends React.Component {
   }
 
   siphon(symbol) {
-    console.log("test");
+    console.log("Oh New York, New York..");
     if (symbol === "" || !symbol) {
     }else{
       fetch('/api/david/v0.00.00/stock/history/'+symbol).then(results => {
@@ -179,7 +178,6 @@ class Frank extends React.Component {
             }).then(data => {
                 return data.json();
             }).then(json => {
-
                 this.setState({predictions: json.result,
                    errors: json.errors,
                    nodes: json.graph.nodes, 
@@ -196,18 +194,20 @@ class Frank extends React.Component {
   }
 
   createChart = () => {
-    if (this.state.chart == undefined) {
+    if (this.state.chart == undefined || this.state.predictions == undefined) {
       return (<div></div>);
     }
 
-
+    
     return (<div className={ this.state.viewingGraph ? "chartContainer" : "chartContainer hide" }>
       <BubbleGraph
       key={"bubbleGraph"}
       symbol={"bubbleGraph"}
       chart={this.state.chart}
       width={(window.innerWidth * 0.6)}
-      height={window.innerHeight * 0.6}/>
+      height={window.innerHeight * 0.6}
+      meta={this.state.meta}
+      comparable={this.state.predictions}/>
     </div>);
   }
 

@@ -85,6 +85,9 @@ class BubbleGraph extends React.Component {
   drawMinette() {
     let chart = this.props.chart;
     let symbol = this.props.symbol;
+    let predictions = this.props.comparable;
+    let comparable = predictions[0].predictions[0].comparable;//lol...
+    let meta = this.props.meta;
 
     let margin = {
         top: 24,
@@ -126,16 +129,27 @@ class BubbleGraph extends React.Component {
     
     minette.createCanvas("svgbubble"+symbol);
 
+    let maximas = chart.data.map(item => item.value);
 
-    minette.setDomainRange(chart.labels,
-                          [0, chart.maxX],
-                          SCALE);
+    //Better
+    minette.setDomainRange([Math.min(...maximas), Math.max(...maximas)],
+      [0, chart.maxX],
+      SCALE);
 
     minette.createAxis("indicators used", "days trained");
 
-    let maximas = chart.data.map(item => item.value);
+    minette.drawMarker(comparable.value, "actual: "+comparable.dateAsString, "close: $"+comparable.value);
+    minette.drawBubble(chart.data, predictions, meta, "indicator", {min: Math.min(...maximas), max: Math.max(...maximas) });
+    //Scatter plot
+    // minette.setDomainRange(chart.labels,
+    //                       [0, chart.maxX],
+    //                       SCALE);
 
-    minette.drawBubble(chart.data, "indicator", {min: Math.min(...maximas), max: Math.max(...maximas) });
+    // minette.createAxis("indicators used", "days trained");
+
+    // let maximas = chart.data.map(item => item.value);
+
+    // minette.drawBubble(chart.data, "indicator", {min: Math.min(...maximas), max: Math.max(...maximas) });
     });
   }
 
@@ -147,8 +161,7 @@ class BubbleGraph extends React.Component {
 
     this.updateChart();
     this.drawMinette();
-    console.log("%%%%%%%%%");
-    console.log(this.props.chart);
+
     return (<div></div>);
   }
 

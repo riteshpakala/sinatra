@@ -7,7 +7,7 @@ import * as d3 from "d3";
 import { Minette, MinetteStyle } from "./D3/Minette.js";
 import CsvDownload from 'react-json-to-csv';
 
-class NodeGraph extends React.Component {
+class BubbleGraph extends React.Component {
 
   constructor(props) {
     super(props);
@@ -24,13 +24,12 @@ class NodeGraph extends React.Component {
       currentError: "0%",
       type: "close",
       viewingNode: true,
-      daysTrained: 0,
-      loaded: false};
+      daysTrained: 0};
   }
 
   componentWillMount() {
 
-    this.drawMinette();
+    // this.drawMinette();
   }
 
   componentDidMount() {
@@ -63,9 +62,9 @@ class NodeGraph extends React.Component {
 
   click() {
     this.setState({viewingNode: !this.state.viewingNode});
-    this.updateChart();
+    // this.updateChart();
 
-    this.drawMinette();
+    // this.drawMinette();
   }
 
   setup(nextProps) {
@@ -79,77 +78,88 @@ class NodeGraph extends React.Component {
   }
 
   updateChart() {
-    d3.select("#svgnode"+this.props.symbol).remove();
-    d3.select("#svgnodeprediction"+this.props.symbol).remove();
+    d3.select("#svgbubble"+this.props.symbol).remove();
+    d3.select("#svgbubbleprediction"+this.props.symbol).remove();
   }
 
   drawMinette() {
-    let nodes = this.props.nodes;
-    let meta = this.props.meta;
-    let highlight = this.props.highlight;
-    let subtitles = this.props.daysPages;
+    let chart = this.props.chart;
+    let symbol = this.props.symbol;
 
     let margin = {
-        top: 8,
+        top: 24,
         right: 8,
         bottom: 8,
-        left: 8,
+        left: 24,
         };
   
     let widthPref = this.props.width - margin.left - margin.right;
     let heightPref = this.props.height - margin.top - margin.bottom;
 
     //Minette
+   
+    const KEY = "State";
+    const GROUP_BY ="Year";
+    
+    const MEASURE3 = "Totals.Unemployment comp revenue";
+    const MEASURE2 = "Totals.Sales tax";
+    const MEASURE = "Totals.Expenditure";
+    
+    const SCALE = 1;
+
     const DATA_SET = "https://gist.githubusercontent.com/riteshpakala/83a28fc8bb1aa13c7b08d393082c1863/raw/fdbe6383c9ca18c626d6c425b3a8d647b6e1df29/sinatra_test_set_1.csv";//"https://gist.githubusercontent.com/riteshpakala/c2388ac4745e2d4626a394fc9708c68d/raw/dbbc0c8ecb92e43a5081895d672baeeded33b036/soc-firm-hi-tech.csv";
 
+    
     let minette = new Minette(DATA_SET);
-
-    let minette_style = new MinetteStyle({top: 8, left: 8, bottom: 8, right: 8},
-                                        {width: widthPref, height: heightPref});
-
-    let symbol = this.props.symbol;
-    let isNode = this.state.viewingNode;
-
+    
+    let minette_style = new MinetteStyle(margin,
+                                         {width: widthPref, height: heightPref});
+    
+    //During a redraw the html component is not editable
+    //this async function circumvents that. But there
+    //should be a proper way to init and allow select to
+    //function as expected
     minette.prepare().then(function() {
-
+    
     minette.setStyle(minette_style);
+    
+    
+    minette.createCanvas("svgbubble"+symbol);
 
-    minette.arrangeNodes(nodes);
-    minette.createCanvas("svgnode"+symbol);
-    if (isNode) {
 
-        minette.drawNodes(meta, highlight, subtitles);
-    } else {
+    minette.setDomainRange(chart.labels,
+                          [0, chart.maxX],
+                          SCALE);
 
-        minette.drawMatrix();
-    }
+    minette.createAxis("indicators used", "days trained");
+
+    let maximas = chart.data.map(item => item.value);
+
+    minette.drawBubble(chart.data, "indicator", {min: Math.min(...maximas), max: Math.max(...maximas) });
     });
   }
 
   generatePrediction = () => {
       
-    if (this.props.prediction == undefined) {
+    if (this.props.chart == undefined) {
       return (<div></div>);
     }
 
-    if (!this.state.loaded) {
-
-      this.updateChart();
-      this.drawMinette();
-  
-      this.setState({loaded: true});
-    }
-    return (<div className="bestError courierSmall"> <p className="tdays sinatraMarbleBrown">training days: { this.props.dataSizes }</p> <p className="error">best error: { (Math.round(parseFloat(this.props.highlight[0].error) * 10000) / 10000) }%</p> </div>);
+    this.updateChart();
+    this.drawMinette();
+    console.log("%%%%%%%%%");
+    console.log(this.props.chart);
+    return (<div></div>);
   }
 
   render() {
 
     return (
-    <div id="minette" className={"minette" + "svgnode" + this.props.symbol + " nodeContainer"}>
+    <div id="minette" className={"minette" + "svgbubble" + this.props.symbol + " bubbleContainer sinatraMarbleBrown courierMedium"}>
         {this.generatePrediction()}
     </div>
     )
   }
 }
 
-export default NodeGraph;
+export default BubbleGraph;

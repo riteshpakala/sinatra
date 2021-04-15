@@ -27,6 +27,10 @@ import regeneratorRuntime from "regenerator-runtime";
         this.dataSet = loaded;
     }
 
+    loadJSON() {
+        this.dataSet = this.dataSet_loc;
+    }
+
     load() {
         return this._load();
     }
@@ -168,6 +172,23 @@ import regeneratorRuntime from "regenerator-runtime";
 
     //TODO: Extract these out to be apart of their shape classes
     //                                          - line 320 ~
+    setDomainRange(xDomains, yDomains, scale) {
+        //console.log(xDomains);
+        //console.log(yDomains);
+        this.origin_x = d3.scaleBand()
+                            .domain(xDomains)
+                            .range([0, this.style.size.width])
+                            .padding(.1);
+        
+        this.origin_y = d3.scaleLinear()
+                            .domain(yDomains)
+                            .range([this.style.size.height, 0]);
+
+        this.x = d3.axisBottom(this.origin_x).tickSize(0);
+    
+        this.y = d3.axisLeft(this.origin_y).tickSize(0);
+    }
+
     setHeatDomainRange(identifier) {
         if (!this.isNest) {
             return;
@@ -258,27 +279,27 @@ import regeneratorRuntime from "regenerator-runtime";
                         .append("svg")
                         .attr("id", identifier)
                         .attr("width", this.style.getPaddedWidth)
-                        .attr("height", this.style.getPaddedHeight)
+                        .attr("height", this.style.getPaddedHeight);
+
     }
 
     createAxis(xTitle, yTitle) {
         this.svg.append("g")
                 .call(this.x)
                 .attr("class", "x axis")
-                .attr("transform", "translate("+this.style.padding.left+"," + (this.style.size.height + this.style.padding.top + 12) + ")")
+                .attr("transform", "translate("+this.style.padding.left+"," + (this.style.size.height + 12) + ")")
                 .selectAll("text")
                 .text();
 
         this.svg.append("g")
                 .call(this.y)
                 .attr("class", "y axis")
-                .attr("transform", "translate("+this.style.padding.left+", "+((this.origin_y.bandwidth()*1.25) + this.style.padding.top/2)+")")
+                .attr("transform", "translate("+this.style.padding.left+", "+(this.style.padding.top/2)+")")
                 .append("text")
 
         this.svg.append("text")
                 .attr("x", this.style.getPaddedWidth/2)
                 .attr("y", this.style.size.height + this.style.padding.bottom + this.style.padding.top)
-                .style("font-size", "20px")//TODO: Abstract out font-size prop
                 .style("max-width", this.style.size.width/2)
                 .attr("text-anchor", "middle")
                 .text(xTitle);
@@ -288,7 +309,6 @@ import regeneratorRuntime from "regenerator-runtime";
                 .append("text")
                 .attr("text-anchor", "middle")
                 .attr("transform", "rotate(-90)")
-                .style("font-size", "20px")//TODO: Abstract out font-size prop
                 .text(yTitle);
     }
     
@@ -398,114 +418,58 @@ import regeneratorRuntime from "regenerator-runtime";
     //TODO: the concept of multiple measureables needs to be refactored
     //and become more re-usable. This should be able to handle N - size
     //comaparables
-    drawBubble(identifier, identifier2, identifier3) {
+    drawBubble(data, identifier, maximas) {
         let x_domain = this.origin_x;
         let y_domain = this.origin_y;
-        let measure = this.measurables[identifier];
-        let measure2 = this.measurables[identifier2];
-        let measure3 = this.measurables[identifier3];
 
         let width = this.style.size.width;
         let height = this.style.size.height;
 
-        let min = measure.getSumMin;
-        let max = measure.getSumMax;
+        let min = maximas.min;
+        let max = maximas.max;
 
-        this.svg.append("g")
-                .selectAll("measure")
-                .append("svg")
-                .attr("width", width)
-                .attr("height", height)
+        // this.svg.append("g")
+        //         .selectAll("measure")
+        //         .append("svg")
+        //         .attr("width", width)
+        //         .attr("height", height)
 
         let attach = this.attachTooltip;
         let remove = this.removeTooltip;
         let tool = this.tool;
         
-        const local = this.svg.selectAll("measure")
-                              .data(measure.nodes)
-                              .enter()
-                              .append("circle")
-                              .classed("bubble", true)
-                              .attr("cx", function(item, i) { return x_domain(measure2.nodes[i].value) })
-                              .attr("cy", function(item) { return y_domain(item.value) })
-                              .attr("r", d => d.radius)
-                              .attr("fill", function(item) { 
-                                  let lum = luminance(item.value, max, min);
-                                  return "hsl("+lum+",50%,42%"+")";
-                              })
-                              //.attr("style", "outline: thin solid black")
-                              .style("stroke", "#121212")
-                              .style("stroke-width", 0.75)
-                              .attr("transform", "translate("+this.style.padding.left+", "+(this.style.padding.top)+")")
-                              /*
-                                  for CS 360 - Review:
-                                  Citation: @Ruben Helsloot
-                                  https://stackoverflow.com/questions/64910052/d3-js-v6-2-get-data-index-in-listener-function-selection-onclick-listene
-                                  This is where I learned of `.nodes().indexOf(this)` to grab and pass an index of an element
-                              */
-                              .on("mouseover", function(event, value) { let index = local.nodes().indexOf(this);
-                                                                            return attach(event,
-                                                                                            measure3.nodes[index].key,
-                                                                                            d3.format(",")(measure3.nodes[index].value),
-                                                                                            tool) 
-                                                                        })
-                              .on("mouseout", function(event, value) { return remove(tool) });
-                              
-    }
-
-    drawLine() {
-        let x_domain = this.origin_x;
-        let y_domain = this.origin_y;
-        let isolatedTimeSeries = this.currentMeasure.isolatedData;
-        
-        //TODO: this nestedKeys system. Is not very clean. Please abstract it out
-        //keys should either be a getter, or multiple data structures within
-        //the measureable class should be pre-generated to handle all these
-        //cases of data traversal
-        let nestedKeys = this.nest[0].values.map(item => { return item.key } );
-
-        let attach = this.attachTooltip;
-        let tool = this.tool;
-        this.svg.selectAll("measure")
-                .append("g")
-                .data(isolatedTimeSeries)
+        let paddingLeft = this.style.padding.left;
+        this.svg.append("g")
+                .selectAll("measure")
+                .data(data)
                 .enter()
                 .append("circle")
-                .style("fill", "#121212")
-                .attr("cx", function(item) { 
-                    let index = isolatedTimeSeries.indexOf(item);
-                    return x_domain(nestedKeys[index]) 
+                .classed("bubble", true)
+                .attr("cx", function(item, i) { 
+                    let xd = x_domain(item[identifier][0].title);
+                    return xd + paddingLeft + 12; })
+                .attr("cy", function(item) { 
+                    let yd = y_domain(item[identifier][0].days);
+                    return yd - 12; })
+                .attr("r", d => 12)//d.radius)
+                .attr("fill", function(item) { 
+                    let lum = luminance(item.value, max, min);
+                    return "hsl("+lum+",50%,42%"+")";
                 })
-                .attr("cy", function(item) { return y_domain(item) })
-                .attr("r", 3)
-                .attr("transform", "translate("+(this.style.padding.left+16)+", "+(this.style.padding.top*2)+")")
-                .on("mouseover", function(event, item) { let index = isolatedTimeSeries.indexOf(item); return attach(event, nestedKeys[index], d3.format(",")(item), tool) })
-                .on("mouseout", this.removeTooltip(tool));
-
-        this.svg.selectAll("measure")
-                .append("g")
-                .data(isolatedTimeSeries)
-                .enter()
+                //.attr("style", "outline: thin solid black")
+                .style("stroke", "#121212")
+                .style("stroke-width", 0.75)
+                .attr("transform", "translate("+this.style.padding.left+", "+(this.style.padding.top)+")")
                 /*
                     for CS 360 - Review:
-                    Citation: @d3
-                    https://github.com/d3/d3-path/blob/v2.0.0/README.md#path
-                    Path api.
+                    Citation: @Ruben Helsloot
+                    https://stackoverflow.com/questions/64910052/d3-js-v6-2-get-data-index-in-listener-function-selection-onclick-listene
+                    This is where I learned of `.nodes().indexOf(this)` to grab and pass an index of an element
                 */
-                .append("path")
-                .attr("class", "line")
-                .attr("fill", "none")
-                .attr("stroke", "#121212")
-                .attr("stroke-width", 1.5)
-                .attr("d", d3.line()
-                    //what"s going on here?:
-                    //well it seems that i, or index likes to be at 1/2 * size(data)
-                    //the min(1,0) is to padd the index to the end while maintaining
-                    //a `0` index start
-                    .x(function(i) { return x_domain(nestedKeys[i*2 + Math.min(1, i)]) })
-                    .y(function(i) { return y_domain(isolatedTimeSeries[i*2 + Math.min(1, i)]) })
-                )
-                .attr("transform", "translate("+(this.style.padding.left+16)+", "+(this.style.padding.top*2)+")")
+                .on("mouseover", function(event, item) { console.log(item); return data == undefined ? undefined : attach(event, data[item][identifier][0].title, data[item][identifier][0].days+" days", tool) })
+                .on("mouseout", this.removeTooltip(tool));
+        //console.log(this.svg);
+                              
     }
 
     drawLegend() {
@@ -513,15 +477,23 @@ import regeneratorRuntime from "regenerator-runtime";
     }
 
     drawNodes(meta, highlight, subtitles) {
+        // console.log(this.svg);
         let attach = this.attachTooltip;
         let tool = this.tool;
+        this.meta = meta;
+        this.highlight = highlight;
+        this.subtitles = subtitles;
+
+        let metadata = this.meta;
+        let highlights = this.highlight;
+        let subtext = this.subtitles;
 
         let targetHighlights = [];
         if (highlight != undefined) {
 
             highlight.map(item => { return item.nodes.forEach(data => { targetHighlights.push(data.target); targetHighlights.push(data.source); }) });
             targetHighlights = targetHighlights.filter(uniques);
-            console.log(targetHighlights);
+            // console.log(targetHighlights);
         } 
         let links = this.svg.append("g")
                             .attr("class", "links")
@@ -535,6 +507,7 @@ import regeneratorRuntime from "regenerator-runtime";
                             // .on("mouseout", this.removeTooltip(tool));
         
         let packedNodes = this.node.getNodesPacked;
+        
         let nodes = this.svg.append("g")
                             .attr("class", "nodes")
                             .selectAll("circle")
@@ -542,8 +515,8 @@ import regeneratorRuntime from "regenerator-runtime";
                             .enter()
                             .append("circle")
                             .attr("r", 10)
-                            .attr("fill",   function(item) { return meta == undefined ? "#121212" : meta[item.id].color; })
-                            .on("mouseover", function(event, item) { console.log(item); return meta == undefined ? undefined : attach(event, meta[packedNodes[item].id].label, subtitles[packedNodes[item].id]+" days", tool) })
+                            .attr("fill",   function(item) { return (metadata) == undefined ? "#121212" : ((metadata[item.id]) == undefined ? "#121212" : metadata[item.id].color); })
+                            .on("mouseover", function(event, item) { /*console.log(item);*/ return metadata == undefined ? undefined : ((metadata[packedNodes[item].id]) == undefined ? "#121212" : attach(event, metadata[packedNodes[item].id].label, subtext[packedNodes[item].id]+" days", tool)) })
                             .on("mouseout", this.removeTooltip(tool));
 
         let simulation = d3.forceSimulation()
@@ -612,7 +585,7 @@ import regeneratorRuntime from "regenerator-runtime";
             }
         }
 		
-		console.log(matrix);
+		//console.log(matrix);
 
         let cellWidth = this.style.size.width / this.node.getNodes.length;
         this.svg.append("g")

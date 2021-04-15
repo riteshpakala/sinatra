@@ -40,6 +40,15 @@
   bottom: 0px;
   right: 4px;
   position: absolute;
+  width: 100%;
+}
+
+.tdays {
+  float:left;
+}
+
+.error {
+  float: right;
 }
 
 .userUpdated {

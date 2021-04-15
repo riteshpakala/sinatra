@@ -75,7 +75,7 @@ function drawChart(props) {
         .datum(data)
         .attr("fill", "none")
         .attr("stroke", props.color)
-        .attr("stroke-width", 4.0)
+        .attr("stroke-width", 2.4)
         .attr("stroke-linecap", "round")
         .attr("d",
             d3.line()
@@ -310,7 +310,7 @@ function addPredictionLine(items, width, height, margin, x, y, color, symbol) {
         .attr("fill", "#FFF")
         .attr("stroke", "rgba(255, 255, 255, 1)") //"+color+","+(1.0/i)+")")
         .attr("stroke-linecap", "round")
-        .attr("stroke-width", 4.0)
+        .attr("stroke-width", 2.4)
         .attr("id", "prediction")
         .attr(
             "d",

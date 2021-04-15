@@ -6,7 +6,9 @@ import '../../constants/GlobalStyle.css';
 
 import NodeGraph from '../graph/NodeGraph';
 import Sidebar from '../sidebar/Sidebar';
+import Disclaimer from '../disclaimer/Disclaimer';
 import Graph from '../graph/Graph';
+import BubbleGraph from '../graph/BubbleGraph';
 
 class Frank extends React.Component {
 
@@ -15,19 +17,25 @@ class Frank extends React.Component {
 
     this.style = this.style.bind(this);
     this.siphon = this.siphon.bind(this);
-    this.onTouchEnd = this.onTouchEnd.bind(this);
-    this.onMouseUp = this.onMouseUp.bind(this);
-    this.click = this.click.bind(this);
+    this.onTouchEndGraph = this.onTouchEndGraph.bind(this);
+    this.onMouseUpGraph = this.onMouseUpGraph.bind(this);
+    this.onTouchEndChart = this.onTouchEndChart.bind(this);
+    this.onMouseUpChart = this.onMouseUpChart.bind(this);
+    this.onTouchEndOverview = this.onTouchEndOverview.bind(this);
+    this.onMouseUpOverview = this.onMouseUpOverview.bind(this);
     this.state = {
         width: 400,
         height: 320,
-        viewingGraph: false,
+        viewingGraph: true,
+        viewingChart: true,
+        viewingOverview: true,
         data:[],
         predictions:[],
         nodes:[],
         highlight:[],
         dataSizes:[],
         daysPages:[],
+        chart: undefined,
         errors: undefined,
         meta: undefined};
   }
@@ -35,19 +43,30 @@ class Frank extends React.Component {
   componentWillMount() {
     this.style();
 
+    
+    this.siphon(this.props.symbol);
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.handleResize);
 
-    document.querySelector("#buttonFrank").addEventListener( 'touchend', this.onTouchEnd, false );
-    document.querySelector("#buttonFrank").addEventListener( 'mouseup', this.onMouseUp, false );
+    document.querySelector("#buttonFrank1").addEventListener( 'touchend', this.onTouchEndGraph, false );
+    document.querySelector("#buttonFrank1").addEventListener( 'mouseup', this.onMouseUpGraph, false );
+    document.querySelector("#buttonFrank2").addEventListener( 'touchend', this.onTouchEndChart, false );
+    document.querySelector("#buttonFrank2").addEventListener( 'mouseup', this.onMouseUpChart, false );
+    document.querySelector("#buttonFrank3").addEventListener( 'touchend', this.onTouchEndOverview, false );
+    document.querySelector("#buttonFrank3").addEventListener( 'mouseup', this.onMouseUpOverview, false );
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
-    document.querySelector("#buttonFrank").removeEventListener("touchend", this.onTouchEnd, false);
-    document.querySelector("#buttonFrank").removeEventListener("mouseup", this.onMouseUp, false);
+
+    document.querySelector("#buttonFrank1").removeEventListener("touchend", this.onTouchEndGraph, false);
+    document.querySelector("#buttonFrank1").removeEventListener("mouseup", this.onMouseUpGraph, false);
+    document.querySelector("#buttonFrank2").removeEventListener("touchend", this.onTouchEndChart, false);
+    document.querySelector("#buttonFrank2").removeEventListener("mouseup", this.onMouseUpChart, false);
+    document.querySelector("#buttonFrank3").removeEventListener("touchend", this.onTouchEndOverview, false);
+    document.querySelector("#buttonFrank3").removeEventListener("mouseup", this.onMouseUpOverview, false);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -58,33 +77,48 @@ class Frank extends React.Component {
     this.style();
   };
 
-  onMouseUp( event ) {
-    this.click();
-    event.preventDefault();
-  }
-
-  onTouchEnd( event ) {
-    this.click();
-    event.preventDefault();
-  }
-
-  click() {
+  onMouseUpGraph( event ) {
     this.setState({viewingGraph: !this.state.viewingGraph});
+    event.preventDefault();
+  }
+
+  onTouchEndGraph( event ) {
+    this.setState({viewingGraph: !this.state.viewingGraph});
+    event.preventDefault();
+  }
+
+  onMouseUpChart( event ) {
+    this.setState({viewingChart: !this.state.viewingChart});
+    event.preventDefault();
+  }
+
+  onTouchEndChart( event ) {
+    this.setState({viewingChart: !this.state.viewingChart});
+    event.preventDefault();
+  }
+
+  onMouseUpOverview( event ) {
+    this.setState({viewingOverview: !this.state.viewingOverview});
+    event.preventDefault();
+  }
+
+  onTouchEndOverview( event ) {
+    this.setState({viewingOverview: !this.state.viewingOverview});
+    event.preventDefault();
   }
 
   style() {
-    const containerWidth = window.innerWidth / 3 - (16 + 84);
+    const containerWidth = window.innerWidth / 3 - 16;
     const containerHeight = window.innerHeight / 3 - 16;
 
     this.setState({
         width: containerWidth * 0.95, //Same as the vw in the css for theViewContainer
         height: containerHeight * 0.9,
     });
-    
-    this.siphon(this.props.symbol);
   }
 
   siphon(symbol) {
+    console.log("test");
     if (symbol === "" || !symbol) {
     }else{
       fetch('/api/david/v0.00.00/stock/history/'+symbol).then(results => {
@@ -152,12 +186,29 @@ class Frank extends React.Component {
                    dataSizes: json.dataSizes,
                    daysPages: json.daysPages,
                    meta: json.graph.meta,
-                   highlight: json.errors.bestPaths});
+                   highlight: json.errors.bestPaths,
+                   chart: json.chart});
             });
 
             this.setState({data: jsonAggregratedData});
       });
     }
+  }
+
+  createChart = () => {
+    if (this.state.chart == undefined) {
+      return (<div></div>);
+    }
+
+
+    return (<div className={ this.state.viewingGraph ? "chartContainer" : "chartContainer hide" }>
+      <BubbleGraph
+      key={"bubbleGraph"}
+      symbol={"bubbleGraph"}
+      chart={this.state.chart}
+      width={(window.innerWidth * 0.6)}
+      height={window.innerHeight * 0.6}/>
+    </div>);
   }
 
   createNodes = () => {
@@ -197,27 +248,41 @@ class Frank extends React.Component {
     return (
     <div className="frankContainer">
 
-      {this.createNodes()}
+        {this.createNodes()}
 
-      <div className={ this.state.viewingGraph ? "graphContainer" : "graphContainer hide" }>
+        <div className={ this.state.viewingChart ? "frankGraphContainer" : "frankGraphContainer hide" }>
 
-        <Graph
-        symbol={this.props.symbol}
-        count={4}
-        width={(window.innerWidth * 0.95) - 200}
-        height={window.innerHeight * 0.9}/>
-      </div>
-
-
-
-        <div className="graphsToTheRight relative">
-
-            <Sidebar />
-
-            <div id="buttonFrank" className="frankButton courierSmall stoicBlack">
-                <p> { this.state.viewingGraph ? "hide chart" : "show chart" } </p>
-            </div>
+          <Graph
+          symbol={this.props.symbol}
+          count={4}
+          width={(window.innerWidth * 0.36)}
+          height={window.innerHeight * 0.24}/>
         </div>
+
+
+
+        <div className="controlBarContainer relative">
+          <div className="controlBarButtons">
+
+            <div id="buttonFrank2" className="frankButton courierSmall stoicBlack floatRight sinatraMarbleBrownBG">
+                <p> { this.state.viewingChart ? "hide chart" : "chart" } </p>
+            </div>
+
+            <div id="buttonFrank1" className="frankButton courierSmall stoicBlack floatRight sinatraMarbleBrownBG">
+                <p> { this.state.viewingGraph ? "hide plot" : "analyze" } </p>
+            </div>
+            <div id="buttonFrank3" className="frankButton courierSmall stoicBlack floatLeft sinatraOrangeBG">
+                <p> { this.state.viewingOverview ? "hide" : "overview" } </p>
+            </div>
+          </div>
+        </div>
+
+        <div className={ this.state.viewingOverview ? "disclaimerFrank" : "disclaimerFrank hide" }>
+
+          <Disclaimer />
+        </div>
+
+        {this.createChart()}
 
     </div>
     )

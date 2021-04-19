@@ -55,20 +55,17 @@ class Sidebar extends React.Component {
         <dd>- predictions take time to load in, there's no indicator yet.</dd>
 
         <dt>Alpha Overview - 2021-04-12</dt>
-        <dd>- A node-link diagram, adjacency matrix, and a line chart will visualize the length of time (in days) certain technical indicators should be compared against. To properly identify a security's trending behavior. For instance, an SMA/EMA are moving averages usually judged from 20, 50, 100 day intervals respectively. What if there was a more specific setting we can discover in between those? Such as 27 today and maybe 36 tomorrow? That's the goal of this project.</dd>
+        <dd>- I've built a processing flow of large amounts of financial security data. This flow is then funneled into a Support Vector Machine, where we will draw regressional trends of a security to forecast a projected price. In this presentation, we will back-test to a previously achieved price to identify this algorithm's accuracy. The price we are predicting is always the most recent price available for the security in question. The theory we will prove is discovering the specific days each indicator should compute in identifying the correct prediction. Then we will identify, if 2 week trading strategeties can be defined concretely. With the usage of the certain technical indicators.</dd>
         
         <dt>Features</dt>
-        <dd>- Volume Weighted Average, Volatility, Momentum, EMA, SMA.</dd>
-        <dd>- Node link diagram logic</dd>
-        <dd>- Adjacency Matrix logic</dd>
-        <dd>- Line chart functionality and pseudo interactive</dd>
-        <dd>- Prediction infrastructure setup</dd>
+        <dd>- Volume Weighted Average, Volatility, Momentum, MacD, EMA, SMA, Stochastics, Change, Volume Change.</dd>
+        <dd>- Node link diagram to resemble best prediction per iteration</dd>
+        <dd>- Scatter plot for each prediction compared to the actual price</dd>
+        <dd>- Line chart to show current security price and history</dd>
 
         <dt>Upcoming Milestones</dt>
-        <dd>- Update node-link diagram to prediction results</dd>
-        <dd>- Update adjacency matrix to prediction results</dd>
         <dd>- Refine legends for node link and adjacency matrices</dd>
-        <dd>- Implement, MacD, RSI, Stochastics</dd>
+        <dd>- Implement, RSI</dd>
         <dd>- Design should be responsive</dd>
         <dd>- Custom tickers</dd>
 

@@ -29,12 +29,14 @@ class Frank extends React.Component {
         viewingGraph: true,
         viewingChart: true,
         viewingOverview: true,
+        viewingTooltip: true,
         data:[],
         predictions:[],
         nodes:[],
         highlight:[],
         dataSizes:[],
         daysPages:[],
+        overview: "",
         chart: undefined,
         errors: undefined,
         meta: undefined};
@@ -42,6 +44,16 @@ class Frank extends React.Component {
 
   componentWillMount() {
     this.style();
+
+    fetch("https://raw.githubusercontent.com/riteshpakala/sinatra/main/README.md")
+    .then((response) => {
+      console.log(response); 
+      return response.text()
+    })
+    .then((text) => {
+      this.setState({ overview: text });
+      console.log(text);
+    })
 
     //DEV:
     //this.siphon(this.props.symbol);
@@ -278,14 +290,14 @@ class Frank extends React.Component {
           </div>
         </div>
 
-        {/* <div className={ this.state.viewingOverview ? "disclaimerFrank" : "disclaimerFrank hide" }>
+        <div className={ this.state.viewingOverview ? "disclaimerTooltip" : "disclaimerTooltip hide" }>
 
-          <Disclaimer />
-        </div> */}
+          <Disclaimer text="this is a tooltip"/>
+        </div> 
 
         <div className={ this.state.viewingOverview ? "disclaimerFrank" : "disclaimerFrank hide" }>
 
-          <Disclaimer />
+          <Disclaimer text={this.state.overview} />
         </div>
 
         {this.createChart()}

@@ -47,6 +47,7 @@ For now, we are randomizing, which in itself is more effecient.
 
 **Citations:**
 Day Ranges, (Section 6.1): **[NTNU](https://core.ac.uk/download/pdf/52104888.pdf)**
+
 Why Randomize?, (Improved Music Based Harmony Search): **[NITW](https://zenodo.org/record/4650967#.YG5wRGhlC9Y)**
 
 #### Visualization Guide
@@ -66,38 +67,75 @@ An interactable line graph of the chosen security, to show us a brief historical
 
 ## Research Notes
 
-****“In this paper we focus on a specific machine learning technique known as Support VectorMachines (SVM). Our goal is to use SVM at timetto predict****
- whether a given stock’s price is higher or lower on day t+m. “
+****“In this paper we focus on a specific machine learning technique known as Support VectorMachines (SVM). Our goal is to use SVM at timetto predict**** whether a given stock’s price is higher or lower on day t+m. “
+
 https://www.cs.princeton.edu/sites/default/files/uploads/saahil_madge.pdf
+
+---
+
 This papers usage of momentum and volatility in prediction analysis is important.
+
 A Paper from a firm discussing Absolute Return Strategies
+
 https://www.arrowfunds.com/files/DDF/TWST_AbsoluteReturnStrategies.pdf
+
 Range based estimation of stochastic volatility models
+
 https://www.sas.upenn.edu/~fdiebold/papers/paper33/final.pdf
+
 A theory of power-law distributions in financial market fluctuations
+
 https://www.nature.com/articles/nature01624
+
+---
+
 Important paper on the concept of “market whales” where market volatility can be proven to be a causation of large singular stake holders. Simply put, volume and volatility being important factors in deciphering a stock’s distribution of retail and firm based trading activity.
 Support Vector Machine for Regression and Applications in Financial Forecasting
+
 https://www.researchgate.net/profile/Theodore-Trafalis/publication/221532842_Support_Vector_Machine_for_Regression_and_Applications_to_Financial_Forecasting/links/573f4f0c08ae298602e8f1e8/Support-Vector-Machine-for-Regression-and-Applications-to-Financial-Forecasting.pdf
+
 Specifically Section 4 has great detail on parameters used for the Radial Basis Function. In this project we are using polynomial regression. But, the data in this, is great in analyzing for hyper parameterization of the SVM .
+
+---
+
 ****Paper on Technical Indicator Usage in Market Prediction****
+
 http://www.ajer.org/papers/v5(12)/Z05120207212.pdf
+
 Reports 85% accuracy.
+
 ****Great in-depth analysis on Technical Indicator and Price Action decision making.****
+
 https://core.ac.uk/download/pdf/52104888.pdf
+
 Important Sections: 2.2.1, 3, 3.1.1, 3.4
 3.1.1 involves the study of Linear Regression
 3.4 involvement of stochastics
+
 If time permits, section 4.2 (Decision trees) would be an optional feature in this project, introducing an XGBoost model operation over SVM. Though, XGBoost implementation will be a longer procedure.
+
+---
+
 Improved Music Based Harmony Search (IMBHS)
+
 https://zenodo.org/record/4650967#.YG5wRGhlC9Y
+
 This paper from IJPLA looks at music based harmony search under a job shop scheduling program.
 With 3 rules when fine-tuning iterations.
+
 Random selection
+
 Of the 4 MUST HAVE FEATURES 2 additional OPTIONAL FEATURES will be added. Until all OPTIONAL FEATURES have completed their possible combinations. The best combination of the entire run is used. 
+
+---
+
 Memory consideration
+
 We will set a user controlled max iteration count, default is at 9 iterations
 (16 runs per iteration) Reaching a max count of 144 training cycles per simulation generation
+
 Pitch adjustment
+
 The adjustment for days for each indicator will be randomized with a new one that has yet to be processed.
+
 Of the 9 iterations each will be visualized

@@ -15,6 +15,7 @@ class NodeGraph extends React.Component {
     this.setup = this.setup.bind(this);
     this.updateChart = this.updateChart.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
+    // this.onMouseOver = this.onMouseOver.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.drawMinette = this.drawMinette.bind(this);
 
@@ -25,7 +26,8 @@ class NodeGraph extends React.Component {
       type: "close",
       viewingNode: true,
       daysTrained: 0,
-      loaded: false};
+      loaded: false,
+      isHovering: false};
   }
 
   componentWillMount() {
@@ -37,12 +39,13 @@ class NodeGraph extends React.Component {
     this.setup(this.props);
     
     // document.querySelector("#button" + this.props.symbol).addEventListener( 'touchend', this.onTouchEnd, false );
-    // document.querySelector("#button" + this.props.symbol).addEventListener( 'mouseup', this.onMouseUp, false );
+    // document.querySelector(".minette" + "svgnode" + this.props.symbol).addEventListener( 'mouseover', this.onMouseOver, false );
   }
 
   componentWillUnmount() {
     // document.querySelector("#button" + this.props.symbol).removeEventListener("touchend", this.onTouchEnd, false);
     // document.querySelector("#button" + this.props.symbol).removeEventListener("mouseup", this.onMouseUp, false);
+    // document.querySelector(".minette" + "svgnode" + this.props.symbol).removeEventListener( 'mouseover', this.onMouseOver, false );
   }
 
   componentWillReceiveProps(nextProps) {

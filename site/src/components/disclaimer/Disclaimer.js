@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import './style.css';
 import '../../constants/GlobalStyle.css';
 
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from 'react-markdown';
+const gfm = require('remark-gfm');
 
 class Disclaimer extends React.Component {
 
@@ -39,7 +40,7 @@ class Disclaimer extends React.Component {
 
     return (
       <div className="disclaimerContainer sinatraMarbleBrown">
-        <ReactMarkdown children={this.props.text} />
+        <ReactMarkdown remarkPlugins={[gfm]} children={this.props.text} />
       </div>
     )
   }

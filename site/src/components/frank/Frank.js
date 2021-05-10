@@ -23,13 +23,19 @@ class Frank extends React.Component {
     this.onMouseUpChart = this.onMouseUpChart.bind(this);
     this.onTouchEndOverview = this.onTouchEndOverview.bind(this);
     this.onMouseUpOverview = this.onMouseUpOverview.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.onMouseUpSearch = this.onMouseUpSearch.bind(this);
+    this.onTouchEndSearch = this.onTouchEndSearch.bind(this);
+    this.toolTip = this.toolTip.bind(this);
+    this.generate = this.generate.bind(this);
     this.state = {
         width: 400,
         height: 320,
-        viewingGraph: true,
-        viewingChart: true,
+        viewingGraph: false,
+        viewingChart: false,
+        viewingSearch: true,
         viewingOverview: true,
-        viewingTooltip: true,
+        viewingTooltip: false,
         data:[],
         predictions:[],
         nodes:[],
@@ -37,9 +43,11 @@ class Frank extends React.Component {
         dataSizes:[],
         daysPages:[],
         overview: "",
+        toolTipText: "",
         chart: undefined,
         errors: undefined,
-        meta: undefined};
+        meta: undefined,
+        generating: false};
   }
 
   componentWillMount() {
@@ -47,16 +55,14 @@ class Frank extends React.Component {
 
     fetch("https://raw.githubusercontent.com/riteshpakala/sinatra/main/README.md")
     .then((response) => {
-      console.log(response); 
       return response.text()
     })
     .then((text) => {
       this.setState({ overview: text });
-      console.log(text);
     })
 
     //DEV:
-    //this.siphon(this.props.symbol);
+    // this.siphon(this.props.symbol);
   }
 
   componentDidMount() {
@@ -68,6 +74,8 @@ class Frank extends React.Component {
     document.querySelector("#buttonFrank2").addEventListener( 'mouseup', this.onMouseUpChart, false );
     document.querySelector("#buttonFrank3").addEventListener( 'touchend', this.onTouchEndOverview, false );
     document.querySelector("#buttonFrank3").addEventListener( 'mouseup', this.onMouseUpOverview, false );
+    document.querySelector("#buttonFrank4").addEventListener( 'mouseup', this.onMouseUpSearch, false );
+    document.querySelector("#buttonFrank4").addEventListener( 'touchend', this.onTouchEndSearch, false );
   }
 
   componentWillUnmount() {
@@ -79,6 +87,8 @@ class Frank extends React.Component {
     document.querySelector("#buttonFrank2").removeEventListener("mouseup", this.onMouseUpChart, false);
     document.querySelector("#buttonFrank3").removeEventListener("touchend", this.onTouchEndOverview, false);
     document.querySelector("#buttonFrank3").removeEventListener("mouseup", this.onMouseUpOverview, false);
+    document.querySelector("#buttonFrank4").removeEventListener( 'mouseup', this.onMouseUpSearch, false );
+    document.querySelector("#buttonFrank4").removeEventListener( 'touchend', this.onTouchEndSearch, false );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -88,6 +98,16 @@ class Frank extends React.Component {
   handleResize = () => {
     this.style();
   };
+
+  onMouseUpSearch( event ) {
+    this.setState({viewingSearch: !this.state.viewingSearch});
+    event.preventDefault();
+  }
+
+  onTouchEndSearch( event ) {
+    this.setState({viewingSearch: !this.state.viewingSearch});
+    event.preventDefault();
+  }
 
   onMouseUpGraph( event ) {
     this.setState({viewingGraph: !this.state.viewingGraph});
@@ -119,6 +139,14 @@ class Frank extends React.Component {
     event.preventDefault();
   }
 
+  generate( event ) {
+    let ticker = document.querySelector("#tickerGen").value;
+    if (!this.state.generating) {
+      this.setState({generating: true, symbol: ticker});
+      this.siphon(ticker);
+    } 
+  }
+
   style() {
     const containerWidth = window.innerWidth / 3 - 24;
     const containerHeight = window.innerHeight / 3 - 16;
@@ -132,6 +160,8 @@ class Frank extends React.Component {
   siphon(symbol) {
     console.log("Oh New York, New York..");
     if (symbol === "" || !symbol) {
+
+      this.setState({generating: false});
     }else{
       fetch('/api/david/v0.00.00/stock/history/'+symbol).then(results => {
              return results;
@@ -201,9 +231,44 @@ class Frank extends React.Component {
                    chart: json.chart});
             });
 
-            this.setState({data: jsonAggregratedData});
+            this.setState({data: jsonAggregratedData, generating: false, viewingChart: true, viewingGraph: true});
       });
     }
+  }
+
+  toolTip(event) {
+    let nodeCand = parseInt(event.target.id.replace("svgnodenodeGraph", ""));
+
+    if (nodeCand != undefined && !isNaN(nodeCand)) {
+      let highlight = this.state.highlight[nodeCand];
+      if (highlight != undefined) {
+        let targets = highlight[0].nodes.map(item => { return item.target });
+        let overall = [...highlight[0].nodes.map(item => { return item.source }), ...targets];
+
+        let unique = new Set(overall);
+
+        this.setState({viewingTooltip: true, toolTipText: "Looks like the best results for this iteration used: " + [...unique].join(' ') + " as the indicators for its prediction."});
+      }
+      
+    } else if (event.target.id === "svgbubblebubbleGraph") {
+
+      let actual = this.state.predictions[0].predictions[0].comparable.value;
+      let size = this.state.chart.data.length;
+      let belowActual = this.state.chart.data.filter(item => { return item.value < actual }).length;
+      
+      // A buy indicator
+      if (belowActual > size / 2) {
+        this.setState({viewingTooltip: true, toolTipText: "We are looking at a potential potential BUY indicator as " + belowActual + " predictions were found below the last actual price."});
+      } else { // sell indicator
+        this.setState({viewingTooltip: true, toolTipText: "We are looking at a potential potential SELL indicator as " + (size - belowActual) + " predictions were found below the last actual price."});
+      }
+    } else {
+      this.setState({viewingTooltip: false, toolTipText: ""});
+    }
+  }
+
+  onMouseLeave(event) {
+    this.setState({viewingTooltip: false, toolTipText: ""});
   }
 
   createChart = () => {
@@ -230,7 +295,7 @@ class Frank extends React.Component {
     let counter = 0;
     
     for (let i = 0; i < 3; i++) {
-      let children = []
+      let children = [];
 
       for (let j = 0; j < 3; j++) {
 
@@ -246,7 +311,7 @@ class Frank extends React.Component {
           highlight={this.state.highlight[counter]}
           meta={this.state.meta}
           dataSizes={this.state.dataSizes[counter]}
-          daysPages={this.state.daysPages[counter]}/>);
+          daysPages={this.state.daysPages[counter]} />);
 
         counter += 1;
       }
@@ -259,23 +324,37 @@ class Frank extends React.Component {
   render() {
 
     return (
-    <div className="frankContainer">
+    <div className="frankContainer" onMouseOver={this.toolTip} onMouseLeave={this.onMouseLeave} >
+
+        <form className= { this.state.viewingSearch ? "symbolInput courierMedium" : "hide" }>
+          <p>Enter a ticker (i.e. 'TSLA'):</p>
+          <div className="generateContainer">
+
+            <input
+              id="tickerGen"
+              type="text"
+            />
+            <p className="genButton" onMouseDown={this.generate}> Generate </p>
+          </div>
+        </form>
 
         {this.createNodes()}
 
-        <div className={ this.state.viewingChart ? "frankGraphContainer" : "frankGraphContainer hide" }>
+        {this.createChart()}
 
+        <div className={ this.state.viewingChart ? "frankGraphContainer" : "frankGraphContainer hide" }>
           <Graph
-          symbol={this.props.symbol}
+          symbol={this.state.symbol}
           count={4}
           width={(window.innerWidth * 0.36)}
           height={window.innerHeight * 0.24}/>
         </div>
 
-
-
         <div className="controlBarContainer relative">
           <div className="controlBarButtons">
+            <div id="buttonFrank4" className="frankButton courierSmall stoicBlack floatRight sinatraMarbleBrownBG">
+                <p> { this.state.viewingSearch ? "hide search" : "search" } </p>
+            </div>
 
             <div id="buttonFrank2" className="frankButton courierSmall stoicBlack floatRight sinatraMarbleBrownBG">
                 <p> { this.state.viewingChart ? "hide chart" : "chart" } </p>
@@ -290,17 +369,15 @@ class Frank extends React.Component {
           </div>
         </div>
 
-        <div className={ this.state.viewingOverview ? "disclaimerTooltip" : "disclaimerTooltip hide" }>
+        <div className={ this.state.viewingTooltip ? "disclaimerTooltip" : "disclaimerTooltip hide" }>
 
-          <Disclaimer text="this is a tooltip"/>
+          <Disclaimer text={this.state.toolTipText}/>
         </div> 
 
         <div className={ this.state.viewingOverview ? "disclaimerFrank" : "disclaimerFrank hide" }>
 
           <Disclaimer text={this.state.overview} />
         </div>
-
-        {this.createChart()}
 
     </div>
     )

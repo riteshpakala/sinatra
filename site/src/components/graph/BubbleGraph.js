@@ -24,6 +24,7 @@ class BubbleGraph extends React.Component {
       currentError: "0%",
       type: "close",
       viewingNode: true,
+      loaded: false,
       daysTrained: 0};
   }
 
@@ -136,7 +137,7 @@ class BubbleGraph extends React.Component {
       [0, chart.maxX],
       SCALE);
 
-    minette.createAxis("indicators used", "days trained");
+    minette.createAxis("", "");
 
     minette.drawMarker(comparable.value, "actual: "+comparable.dateAsString, "close: $"+comparable.value);
     minette.drawBubble(chart.data, predictions, meta, "indicator", {min: Math.min(...maximas), max: Math.max(...maximas) });
@@ -159,9 +160,12 @@ class BubbleGraph extends React.Component {
       return (<div></div>);
     }
 
-    this.updateChart();
-    this.drawMinette();
+    if (!this.state.loaded) {
+      this.updateChart();
+      this.drawMinette();
 
+      this.setState({loaded: true});
+    }
     return (<div></div>);
   }
 

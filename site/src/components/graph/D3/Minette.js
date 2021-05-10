@@ -289,13 +289,15 @@ import regeneratorRuntime from "regenerator-runtime";
                 .attr("class", "x axis")
                 .attr("transform", "translate("+this.style.padding.left+"," + (this.style.size.height + 12) + ")")
                 .selectAll("text")
+                .style("font-size", "12px")
                 .text();
 
         this.svg.append("g")
                 .call(this.y)
                 .attr("class", "y axis")
-                .attr("transform", "translate("+this.style.padding.left+", "+(this.style.padding.top/2)+")")
-                .append("text")
+                .attr("transform", "translate("+this.style.padding.left+", "+(this.style.padding.top/2)+")") 
+                .style("font-size", "12px")
+                .append("text");
 
         this.svg.append("text")
                 .attr("x", this.style.getPaddedWidth/2)
@@ -505,17 +507,23 @@ import regeneratorRuntime from "regenerator-runtime";
                 title += " | defaults set to: " + populated[0].dataSize + " days";
             }
         }
+        d3.selectAll(".bubble")
+            .style("opacity", "0.24");
         d3.selectAll(".a"+item.id.replaceAll("-", ""))
             .style("stroke", "#39FF14")
-            .style("stroke-width", "2");
+            .style("stroke-width", "2")
+            .style("opacity", "1.0");;
 
         return title;
     }
 
     deHighlightNode(item, data, variant) {
+        d3.selectAll(".bubble")
+            .style("opacity", "1.0");
         d3.selectAll(".a"+item.id.replaceAll("-", ""))
             .style("stroke", "#121212")
-            .style("stroke-width", "0");
+            .style("stroke-width", "0")
+            .style("opacity", "1.0");
     }
 
     //TODO: should be reusable. refactor pls.

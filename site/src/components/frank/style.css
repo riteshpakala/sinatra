@@ -41,6 +41,17 @@
 }
 
 .disclaimerFrank {
+    width: 480px;
+    height: 480px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: 0 auto;
+    transform: translate(-50%, -50%);
+    z-index: 12000;
+}
+
+.disclaimerTooltip {
     width: 360px;
     height: 480px;
     position: absolute;

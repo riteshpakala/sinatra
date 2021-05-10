@@ -43,7 +43,8 @@ class Frank extends React.Component {
   componentWillMount() {
     this.style();
 
-    this.siphon(this.props.symbol);
+    //DEV:
+    //this.siphon(this.props.symbol);
   }
 
   componentDidMount() {
@@ -276,6 +277,11 @@ class Frank extends React.Component {
             </div>
           </div>
         </div>
+
+        {/* <div className={ this.state.viewingOverview ? "disclaimerFrank" : "disclaimerFrank hide" }>
+
+          <Disclaimer />
+        </div> */}
 
         <div className={ this.state.viewingOverview ? "disclaimerFrank" : "disclaimerFrank hide" }>
 

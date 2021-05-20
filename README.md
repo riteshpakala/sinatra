@@ -2,6 +2,44 @@
 #### CS 360
 #### by [ritesh pakala](https://paka.la)
 ---
+## Installation
+
+#### 1. Install Node (10.3.0 or later) & NPM packaged with this variant
+
+Link: https://nodejs.org/en/download/
+
+
+Check installation by checking your system's node version. Within Command Line on Windows or Terminal in MacOSX or any shell similar for your respective system.
+```
+node -v
+```
+
+#### 2. Install Dependencies
+
+Enter the root directory of the project and run:
+```
+npm install
+```
+
+This will install all necessary dependencies required.
+
+
+#### 3. Run
+
+```
+npm run devhttp
+```
+
+And you will be able to see the working demo at: `http://0.0.0.0:8081/`
+
+## Files
+
+Most files pertainined to d3 visualizations and the logic for data aggregations sits here.
+
+`src/components/Frank`
+`src/components/Graph`
+
+---
 
 ## Objectives
 - Understanding a securities' expected trend for the following trading days.

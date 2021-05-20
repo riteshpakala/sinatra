@@ -12,6 +12,10 @@ class LineChart {
 
 }
 
+/**
+ * The line chart d3 logic
+ *  
+ */
 function drawChart(props) {
     let data = props.data;
     let symbol = props.symbol;
@@ -213,6 +217,15 @@ function drawChart(props) {
     }
 }
 
+/**
+ * Generates a glow filter with multiple layers of it for intensity
+ * purposes around the edge of a prediction line. Not currently in use
+ * but a good to have when predictions need to be drawn on the line chart
+ * itself.
+ * 
+ * @param defs type of d3
+ * @param symbol for ticker
+ */
 function addGlow(defs, symbol) {
     let shadowCM1 = "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0";
     let shadowCM2 = "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0";

@@ -154,6 +154,12 @@ class BubbleGraph extends React.Component {
     });
   }
 
+  /**
+   * controls redraw requests to fire the minette d3 bubble chart
+   * flow.
+   * 
+   * @returns empty chart
+   */
   generatePrediction = () => {
       
     if (this.props.chart == undefined) {

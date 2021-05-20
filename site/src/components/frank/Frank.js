@@ -157,6 +157,14 @@ class Frank extends React.Component {
     });
   }
 
+  /**
+   * This will fetch stock history data via server.js
+   * Then runs another back-end query to the SVM server
+   * I am hosting as well in parallel to run iteration cycles 
+   * on historical data.
+   * 
+   * @param symbol ticker 
+   */
   siphon(symbol) {
     console.log("Oh New York, New York..");
     if (symbol === "" || !symbol) {
@@ -209,6 +217,7 @@ class Frank extends React.Component {
             }
 
             // console.log(jsonAggregratedData);
+            //Other hosted server api request.
             fetch('/api/david/v0.00.00/stock/think', {
                     method: 'POST',
                     headers: {
@@ -236,6 +245,11 @@ class Frank extends React.Component {
     }
   }
 
+  /**
+   * linked in a possible manner with generated graphs
+   * 
+   * @param event mouse event  
+   */
   toolTip(event) {
     let nodeCand = parseInt(event.target.id.replace("svgnodenodeGraph", ""));
 

@@ -59,6 +59,11 @@ class Graph extends React.Component {
            height: vh });
   }
 
+  /**
+   * This will fetch stock history data via server.js
+   * 
+   * @param symbol ticker 
+   */
   siphon(symbol) {
     if (symbol === "" || !symbol) {
     }else{

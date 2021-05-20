@@ -103,6 +103,10 @@ class NodeGraph extends React.Component {
     let heightPref = this.props.height - margin.top - margin.bottom;
 
     //Minette
+    //This data_Set link is for testing.
+    //otherwise as you can see, the `arrangeNodes(...)` function below 
+    //is taking data we are inserting from the aggregates we fetched
+    //earlier
     const DATA_SET = "https://gist.githubusercontent.com/riteshpakala/83a28fc8bb1aa13c7b08d393082c1863/raw/fdbe6383c9ca18c626d6c425b3a8d647b6e1df29/sinatra_test_set_1.csv";//"https://gist.githubusercontent.com/riteshpakala/c2388ac4745e2d4626a394fc9708c68d/raw/dbbc0c8ecb92e43a5081895d672baeeded33b036/soc-firm-hi-tech.csv";
 
     let minette = new Minette(DATA_SET);
@@ -117,6 +121,8 @@ class NodeGraph extends React.Component {
 
     minette.setStyle(minette_style);
 
+    //remove `nodes` to make it ...arrangeNodes(); to demo
+    //the DATA_SET for customizing node graph styling more easily.
     minette.arrangeNodes(nodes);
     minette.createCanvas("svgnode"+symbol);
     if (isNode) {

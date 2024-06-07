@@ -3,19 +3,19 @@ import regeneratorRuntime from "regenerator-runtime";
 
 /*****************************************
  *     author: Ritesh Pakala
- *     D3 Engine - `Minette` v0.0
+ *     D3 Engine - `Quartz` v0.0
  *               - 2021-03-01        //  *
  * 
  *     ~currently augmenting D3 in CS360.
  * ~~ more to come.
  * ****/
 
- class Minette {
+ class Quartz {
 
     constructor(dataSet_loc) {
         this.dataSet_loc = dataSet_loc;
         this.measurables = {};
-        this.tool = new MinetteTool();
+        this.tool = new QuartzTool();
     }
 
     /*************************
@@ -57,7 +57,7 @@ import regeneratorRuntime from "regenerator-runtime";
                                  -- i.e. State, Country
      */
     setMeasure(forIdentifier, scale) {
-        let measures = new MinetteMeasurable(forIdentifier, this.nest, scale);
+        let measures = new QuartzMeasurable(forIdentifier, this.nest, scale);
 
         if (this.isNest) {
             measures.nestifySum();
@@ -129,14 +129,14 @@ import regeneratorRuntime from "regenerator-runtime";
         if (nodes != undefined) {
             this.dataSet = nodes;
         }
-        this.node = new MinetteNodeLink(this.dataSet);
+        this.node = new QuartzNodeLink(this.dataSet);
     }
 
     /*******************
      *     Styling     *
      * ****/
-    setStyle(minetteStyle) {
-        this.style = minetteStyle;
+    setStyle(quartzStyle) {
+        this.style = quartzStyle;
     }
 
     /*********************
@@ -274,8 +274,8 @@ import regeneratorRuntime from "regenerator-runtime";
 
     createCanvas(identifier) {
         this.tool.tip.remove();
-        this.tool = new MinetteTool(identifier);
-        this.svg = d3.select(".minette"+identifier)
+        this.tool = new QuartzTool(identifier);
+        this.svg = d3.select(".quartz"+identifier)
                         .append("svg")
                         .attr("id", identifier)
                         .attr("width", this.style.getPaddedWidth)
@@ -723,9 +723,9 @@ import regeneratorRuntime from "regenerator-runtime";
     }
 }
 
-class MinetteTool {
+class QuartzTool {
     constructor(identifier) {
-        this.tip = d3.select(".minette"+identifier)
+        this.tip = d3.select(".quartz"+identifier)
                            .append("div")	
                            .attr("class", "tooltip")	
                            .attr("id", "tooltip"+identifier)				
@@ -739,9 +739,9 @@ class MinetteTool {
 }
 
 /********************************
- *       Minette Node Links     *
+ *       Quartz Node Links     *
  * ****/
- class MinetteNodeLink {
+ class QuartzNodeLink {
     /*
         Let"s add a dimension so our loaded Data Set can accurately parse 
         before we begin with the D3 festivities
@@ -773,9 +773,9 @@ class MinetteTool {
 }
 
 /********************************
- *       Minette Measurable     *
+ *       Quartz Measurable     *
  * ****/
-class MinetteMeasurable {
+class QuartzMeasurable {
     /*
         Let"s add a dimension so our loaded Data Set can accurately parse 
         before we begin with the D3 festivities
@@ -909,27 +909,27 @@ class MinetteMeasurable {
 }
 
 /**************************
- *      Minette Graphs     *
+ *      Quartz Graphs     *
  * ****/
 
 //TODO: Abstract these out to incorporate D3 draw logics
-class MinetteBar {
+class QuartzBar {
 
 }
 
-class MinetteScatter {
+class QuartzScatter {
 
 }
 
-class MinetteHeat {
+class QuartzHeat {
 
 }
 
-class MinetteFinance {
+class QuartzFinance {
 
 }
 
-class MinetteLegend {
+class QuartzLegend {
     constructor(data, ticks) {
         this.dataSet = data;
 
@@ -995,8 +995,8 @@ class MinetteLegend {
 
     draw() {       
         var svg = d3.select("body")
-                    .append("minette")	
-                    .attr("class", "minette_legend")
+                    .append("quartz")	
+                    .attr("class", "quartz_legend")
                     .append("svg");
 
         svg.append("g")
@@ -1050,9 +1050,9 @@ class MinetteLegend {
 }
 
 /**************************
- *       Minette Style     *
+ *       Quartz Style     *
  * ****/
-class MinetteStyle {
+class QuartzStyle {
     /*
         Basic style properties
 
@@ -1114,4 +1114,4 @@ function uniques(value, index, self) {
     return self.indexOf(value) === index;
 }
 
-export { Minette, MinetteStyle };
+export { Quartz, QuartzStyle };
